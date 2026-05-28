@@ -10,92 +10,28 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --bg: #f1f5f9;
-      --card-bg: #ffffff;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --input-bg: #f8fafc;
-      --radius-lg: 16px;
-    }
-
-    /* บังคับความสูงเต็มจอ เพื่อให้ส่วนหัว/ท้ายนิ่ง และเลื่อนแค่ตาราง */
-    body { 
-      font-family: 'Prompt', sans-serif; 
-      background-color: var(--bg); 
-      color: var(--text); 
-      height: 100vh; 
-      margin: 0; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      padding: 10px 0;
-      overflow: hidden; 
-    }
-    
-    /* กาง 95% ของจอ และใช้ Flexbox จัดการพื้นที่แนวตั้ง */
-    .main-wrap { 
-      width: 96%; 
-      height: 100%; 
-      display: flex; 
-      flex-direction: column;
-      background: var(--card-bg); 
-      border-radius: var(--radius-lg); 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-      padding: 1.25rem 1.5rem; 
-      border: 1px solid #fff;
-    }
-    
-    /* ปรับขนาดส่วนหัวให้เล็กลง */
+    :root { --primary: #4f46e5; --primary-hover: #4338ca; --bg: #f1f5f9; --card-bg: #ffffff; --text: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --input-bg: #f8fafc; --radius-lg: 16px; }
+    body { font-family: 'Prompt', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 10px 0; overflow: hidden; }
+    .main-wrap { width: 96%; height: 100%; display: flex; flex-direction: column; background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 1.25rem 1.5rem; border: 1px solid #fff; }
     h2 { font-weight: 700; font-size: 1.4rem; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;}
-
     .btn-main { background: var(--primary); border: none; color: white; padding: 8px 20px; font-size: 0.9rem; border-radius: 8px; font-weight: 500; transition: all 0.2s; white-space: nowrap; }
     .btn-main:hover { background: var(--primary-hover); color: white; }
-
-    /* โซนตัวกรอง */
     .filter-zone { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 15px; margin-bottom: 10px; }
     .filter-zone input, .filter-zone select { font-size: 0.85rem; border-color: #cbd5e1; }
-
-    /* โซนตาราง ให้ยืดหยุ่นและ Scroll ได้ */
-    .table-container { 
-      flex: 1; 
-      overflow-y: auto; 
-      border: 1px solid var(--border); 
-      border-radius: 10px; 
-      background: #fff;
-    }
-    
-    /* ปรับฟอนต์ตารางให้เล็กและคลีน */
-    .table-modern { margin: 0; width: 100%; min-width: 1000px; border-collapse: collapse; }
-    .table-modern th { 
-      background: #f1f5f9; 
-      color: var(--text-muted); 
-      font-weight: 600; 
-      padding: 12px 15px; 
-      font-size: 0.8rem; 
-      text-transform: uppercase; 
-      position: sticky; 
-      top: 0; 
-      z-index: 10; 
-      box-shadow: 0 1px 0 var(--border); 
-      white-space: nowrap; 
-    }
+    .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+    .table-modern { margin: 0; width: 100%; min-width: 1100px; border-collapse: collapse; }
+    .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 12px 15px; font-size: 0.8rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
     .table-modern td { padding: 10px 15px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-
-    /* Modal Form Styles */
     .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
     .form-control, .form-select { border-radius: 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; }
     .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
     .modal-content { border-radius: var(--radius-lg); border: none; }
     .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
     .modal-body { padding: 1.5rem; }
-    
     .vehicle-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
-
-    /* Mobile Adaptations */
+    .action-btn { padding: 2px 8px; font-size: 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: white; transition: 0.2s; }
+    .action-btn:hover { background: #f1f5f9; }
+    
     @media (max-width: 768px) {
       body { padding: 0; }
       .main-wrap { width: 100%; border-radius: 0; padding: 1rem; }
@@ -111,31 +47,24 @@
 <body>
 
   <div class="main-wrap">
-    
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>🚚 Smart Booking</h2>
-      <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">
-        + สร้างรายการ
-      </button>
+      <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">+ สร้างรายการ</button>
     </div>
 
     <div class="filter-zone d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
         <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 ค้นหา (เลขงาน, ลูกค้า...)" style="width: 220px;" onkeyup="applyFilters()">
-        
         <div class="input-group input-group-sm" style="width: 170px;">
           <span class="input-group-text bg-white text-muted border-end-0">ด/ป</span>
           <input type="month" id="monthFilter" class="form-control border-start-0" onchange="document.getElementById('dateFilter').value=''; applyFilters()">
         </div>
-
         <div class="input-group input-group-sm" style="width: 170px;">
           <span class="input-group-text bg-white text-muted border-end-0">ว/ด/ป</span>
           <input type="date" id="dateFilter" class="form-control border-start-0" onchange="document.getElementById('monthFilter').value=''; applyFilters()">
         </div>
-        
         <button class="btn btn-sm btn-light border text-muted" onclick="clearFilters()">ล้างค่า</button>
       </div>
-      
       <div class="d-flex align-items-center gap-2">
         <span class="text-muted" style="font-size: 0.8rem;">แสดง:</span>
         <select id="limitSelect" class="form-select form-select-sm" style="width: 90px;" onchange="changeLimit()">
@@ -151,11 +80,11 @@
       <table class="table-modern table-hover">
         <thead>
           <tr>
+            <th>จัดการ</th>
             <th>เลขงาน</th><th>วันที่</th><th>ลูกค้า</th><th>สถานที่รับ</th><th>สถานที่ส่ง</th><th>รถ/ประเภท</th><th>ทะเบียน</th><th>คนขับ</th><th>หมายเหตุ</th>
           </tr>
         </thead>
-        <tbody id="tableBody">
-          </tbody>
+        <tbody id="tableBody"></tbody>
       </table>
     </div>
 
@@ -167,7 +96,6 @@
         <button class="btn btn-sm btn-light border" onclick="nextPage()">ถัดไป ▶</button>
       </div>
     </div>
-
   </div>
 
   <div class="modal fade" id="bookingModal" tabindex="-1">
@@ -192,22 +120,19 @@
                 <label class="form-label">ลูกค้า</label>
                 <div class="input-group">
                   <select class="form-select" id="customerSelect" name="customer" required><option value="">-- เลือกลูกค้า --</option></select>
-                  <button class="btn btn-light border" type="button" onclick="promptAddNew('customer', 'ชื่อลูกค้าใหม่')">+</button>
                 </div>
               </div>
               <div class="col-md-6">
                 <label class="form-label">สถานที่รับ</label>
                 <div class="input-group">
                   <select class="form-select" id="pickupSelect" name="pickup" required><option value="">-- เลือกสถานที่รับ --</option></select>
-                  <button class="btn btn-light border" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
                 </div>
               </div>
               <div class="col-md-6">
                 <label class="form-label">สถานที่ส่ง (พิมพ์ค้นหาได้)</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" list="dropoffOptions" id="dropoffInput" name="dropoff" placeholder="-- พิมพ์หรือเลือก --" autocomplete="off" required>
+                  <input type="text" class="form-control" list="dropoffOptions" name="dropoff" placeholder="-- พิมพ์หรือเลือก --" autocomplete="off" required>
                   <datalist id="dropoffOptions"></datalist>
-                  <button class="btn btn-light border" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
                 </div>
               </div>
               <div class="col-md-12 mt-3">
@@ -215,7 +140,6 @@
                 <input type="text" class="form-control" name="remark" placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)">
               </div>
             </div>
-
             <hr class="my-4 text-muted">
             <h6 class="fw-bold mb-3 text-primary">รายละเอียดรถและคนขับ</h6>
             <div id="vehicleContainer"></div>
@@ -224,6 +148,72 @@
         <div class="modal-footer bg-light border-top-0">
           <button type="button" class="btn btn-light border" data-bs-dismiss="modal">ยกเลิก</button>
           <button type="button" class="btn-main" onclick="submitForm()" id="saveBtn">บันทึกข้อมูล</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-primary">✏️ แก้ไขข้อมูลรถ (1 คัน)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editForm">
+            <input type="hidden" id="editRowId">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">เลขงาน (ไม่อนุญาตให้แก้)</label>
+                <input type="text" class="form-control bg-light" id="editJobNo" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">วันที่เริ่มงาน</label>
+                <input type="date" class="form-control" id="editDate" required>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label">ลูกค้า</label>
+                <select class="form-select" id="editCustomer" required><option value="">-- เลือกลูกค้า --</option></select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">สถานที่รับ</label>
+                <select class="form-select" id="editPickup" required><option value="">-- เลือกสถานที่รับ --</option></select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">สถานที่ส่ง</label>
+                <input type="text" class="form-control" list="editDropoffOptions" id="editDropoff" autocomplete="off" required>
+                <datalist id="editDropoffOptions"></datalist>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">จำนวนรถ (รวมในบิล)</label>
+                <input type="text" class="form-control" id="editQty" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">ประเภทรถ</label>
+                <select class="form-select" id="editType" required>
+                  <option value="4 ล้อ">4 ล้อ</option><option value="6 ล้อ">6 ล้อ</option><option value="6 ล้อพ่วง">6 ล้อพ่วง</option>
+                  <option value="10 ล้อ">10 ล้อ</option><option value="10 ล้อพ่วง">10 ล้อพ่วง</option><option value="เทรลเลอร์">เทรลเลอร์</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">ทะเบียนรถ</label>
+                <select class="form-select" id="editPlate" required onchange="autoFillEditDriver()"><option value="">-- เลือกทะเบียน --</option></select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">คนขับ (แก้ไขได้)</label>
+                <input type="text" class="form-control" id="editDriver" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">หมายเหตุ</label>
+                <input type="text" class="form-control" id="editRemark">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer bg-light border-top-0">
+          <button type="button" class="btn btn-light border" data-bs-dismiss="modal">ยกเลิก</button>
+          <button type="button" class="btn-main" onclick="submitEditForm()" id="editSaveBtn">อัปเดตข้อมูล</button>
         </div>
       </div>
     </div>
@@ -239,10 +229,8 @@
 
     let vehicleList = [];
     let vehicleOptionsHTML = '<option value="">-- เลือกทะเบียน --</option>';
-    
-    // ตัวแปรสำหรับระบบ Filter & Pagination
-    let allDashboardData = []; // เก็บข้อมูลดั้งเดิมทั้งหมด
-    let filteredData = [];     // เก็บข้อมูลที่ผ่านการกรองแล้ว
+    let allDashboardData = []; 
+    let filteredData = [];     
     let currentPage = 1;
     let currentLimit = 30;
 
@@ -252,16 +240,23 @@
         const response = await fetch(GAS_URL + "?action=getInitialData");
         const data = await response.json();
         
-        // เก็บข้อมูลลงตัวแปรและตั้งให้แสดงรายการล่าสุดขึ้นก่อน (Reverse)
         if(data.dashboard.length > 1) {
           allDashboardData = data.dashboard.slice(1).reverse();
         }
-        applyFilters(); // โหลดตารางครั้งแรก
-        
+        applyFilters(); 
         processVehicles(data.vehicles);
+        
+        // เติมข้อมูลใส่ Dropdown ฟอร์มสร้าง และ ฟอร์มแก้ไข
         populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
+        populateDropdown("editCustomer", data.master.customers, "-- เลือกลูกค้า --");
+        
         populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
+        populateDropdown("editPickup", data.master.pickups, "-- เลือกสถานที่รับ --");
+        
         populateDatalist("dropoffOptions", data.master.dropoffs);
+        populateDatalist("editDropoffOptions", data.master.dropoffs);
+        
+        document.getElementById("editPlate").innerHTML = vehicleOptionsHTML;
         generateVehicleFields(); 
         Swal.close();
       } catch (err) {
@@ -269,29 +264,21 @@
       }
     };
 
-    // ================= โซน Filter และแบ่งหน้า (Pagination) =================
     function applyFilters() {
       const search = document.getElementById('searchInput').value.toLowerCase();
       const dateFilter = document.getElementById('dateFilter').value;
       const monthFilter = document.getElementById('monthFilter').value;
 
       filteredData = allDashboardData.filter(row => {
-        // ค้นหาข้อความในทุกคอลัมน์
         const rowText = row.join(' ').toLowerCase();
         const matchSearch = search === '' || rowText.includes(search);
-        
-        // กรองวันที่ (คอลัมน์ที่ 1 คือวันที่)
         let matchDate = true;
-        if (dateFilter) {
-          matchDate = row[1] && row[1].includes(dateFilter);
-        } else if (monthFilter) {
-          matchDate = row[1] && row[1].includes(monthFilter);
-        }
-        
+        if (dateFilter) matchDate = row[1] && row[1].includes(dateFilter);
+        else if (monthFilter) matchDate = row[1] && row[1].includes(monthFilter);
         return matchSearch && matchDate;
       });
 
-      currentPage = 1; // เริ่มที่หน้าแรกเสมอเมื่อค้นหาใหม่
+      currentPage = 1; 
       renderTablePage();
     }
 
@@ -314,7 +301,7 @@
       tbody.innerHTML = '';
       
       if (filteredData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
         document.getElementById('showingCount').innerText = 0;
         document.getElementById('totalCount').innerText = allDashboardData.length;
         document.getElementById('pageInfo').innerText = 'หน้า 1/1';
@@ -329,7 +316,12 @@
       let html = '';
       for (let i = startIndex; i < endIndex; i++) {
         let row = filteredData[i];
+        // row[10] คือ row index ใน Google Sheets
         html += `<tr>
+          <td class="text-center" style="white-space: nowrap;">
+            <button class="action-btn text-primary" onclick="openEditModal(${i})" title="แก้ไข">✏️</button>
+            <button class="action-btn text-danger ms-1" onclick="deleteBooking(${row[10]})" title="ลบ">🗑️</button>
+          </td>
           <td class="fw-bold text-primary" style="white-space: nowrap;">${row[0] || ''}</td>
           <td style="white-space: nowrap;">${row[1] || ''}</td>
           <td class="fw-medium">${row[2] || ''}</td>
@@ -342,23 +334,17 @@
         </tr>`;
       }
       tbody.innerHTML = html;
-
       document.getElementById('showingCount').innerText = endIndex - startIndex;
       document.getElementById('totalCount').innerText = filteredData.length;
       document.getElementById('pageInfo').innerText = `หน้า ${currentPage}/${totalPages}`;
     }
 
-    function prevPage() {
-      if (currentPage > 1) { currentPage--; renderTablePage(); }
-    }
-
+    function prevPage() { if (currentPage > 1) { currentPage--; renderTablePage(); } }
     function nextPage() {
       const limit = currentLimit === 'all' ? filteredData.length : currentLimit;
       const totalPages = Math.ceil(filteredData.length / limit);
       if (currentPage < totalPages) { currentPage++; renderTablePage(); }
     }
-    // =======================================================================
-
 
     function processVehicles(data) {
       vehicleList = data;
@@ -401,51 +387,131 @@
       const matched = vehicleList.find(v => v[0] === selectObj.value);
       document.getElementById(`driverInput${index}`).value = (matched && matched[2]) ? matched[2] : "";
     }
+    
+    function autoFillEditDriver() {
+      const matched = vehicleList.find(v => v[0] === document.getElementById('editPlate').value);
+      if(matched && matched[2]) document.getElementById('editDriver').value = matched[2];
+    }
 
     function populateDropdown(elementId, items, defaultText) {
       let html = `<option value="">${defaultText}</option>`; 
       items.forEach(item => { if(item) html += `<option value="${item}">${item}</option>`; });
       document.getElementById(elementId).innerHTML = html;
     }
-
     function populateDatalist(elementId, items) {
       let html = '';
       items.forEach(item => { if(item) html += `<option value="${item}">`; });
       document.getElementById(elementId).innerHTML = html;
     }
 
-    async function promptAddNew(type, label) {
-      Swal.fire({
-        title: 'เพิ่ม' + label,
-        input: 'text',
-        inputPlaceholder: 'พิมพ์ที่นี่...',
-        showCancelButton: true,
-        confirmButtonText: 'บันทึก',
-        cancelButtonText: 'ยกเลิก',
-        customClass: { confirmButton: 'btn-main mx-2', cancelButton: 'btn btn-light border mx-2' },
-        buttonsStyling: false,
-        inputValidator: (value) => { if (!value) return 'กรุณากรอกข้อมูล!' }
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-          try {
-            const res = await fetch(GAS_URL, {
-              method: 'POST', redirect: "follow",
-              headers: { "Content-Type": "text/plain;charset=utf-8" },
-              body: JSON.stringify({ action: 'addMasterItem', type: type, newValue: result.value.trim() })
-            });
-            const data = await res.json();
-            if(data.status === 'Success') {
-              populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
-              populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
-              populateDatalist("dropoffOptions", data.master.dropoffs);
-              Swal.fire('สำเร็จ!', 'เพิ่มข้อมูลเรียบร้อยแล้ว', 'success');
-            }
-          } catch(err) { Swal.fire('ผิดพลาด', err.message, 'error'); }
-        }
-      });
+    // แปลงวันที่สำหรับใส่ในช่อง input type="date"
+    function formatToInputDate(dateStr) {
+      if(!dateStr) return '';
+      if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
+      let parts = dateStr.split(/[-/]/);
+      if(parts.length === 3 && parts[0].length <= 2 && parts[2].length === 4) {
+        return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+      }
+      return dateStr;
     }
 
+    // ------------------ โหมดแก้ไขข้อมูล (Edit) ------------------
+    function openEditModal(index) {
+      const limit = currentLimit === 'all' ? filteredData.length : currentLimit;
+      const actualIndex = ((currentPage - 1) * limit) + (index % limit);
+      const row = filteredData[actualIndex];
+      
+      document.getElementById('editRowId').value = row[10]; // สำคัญ: ส่งค่าบรรทัดที่แท้จริง
+      document.getElementById('editJobNo').value = row[0];
+      document.getElementById('editDate').value = formatToInputDate(row[1]);
+      document.getElementById('editCustomer').value = row[2];
+      document.getElementById('editPickup').value = row[3];
+      document.getElementById('editDropoff').value = row[4];
+      document.getElementById('editQty').value = row[5];
+      document.getElementById('editType').value = row[6];
+      document.getElementById('editPlate').value = row[7];
+      document.getElementById('editDriver').value = row[8];
+      document.getElementById('editRemark').value = row[9] || '';
+      
+      new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    async function submitEditForm() {
+      let form = document.getElementById("editForm");
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      
+      const formData = {
+        jobNo: document.getElementById('editJobNo').value,
+        date: document.getElementById('editDate').value,
+        customer: document.getElementById('editCustomer').value,
+        pickup: document.getElementById('editPickup').value,
+        dropoff: document.getElementById('editDropoff').value,
+        qty: document.getElementById('editQty').value,
+        type: document.getElementById('editType').value,
+        plate: document.getElementById('editPlate').value,
+        driver: document.getElementById('editDriver').value,
+        remark: document.getElementById('editRemark').value
+      };
+
+      let btn = document.getElementById("editSaveBtn");
+      btn.disabled = true; btn.innerText = "กำลังอัปเดต...";
+      Swal.fire({ title: 'กำลังอัปเดตข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST', redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ 
+            action: 'editBooking', 
+            rowId: document.getElementById('editRowId').value, 
+            data: formData 
+          })
+        });
+        const result = await res.json();
+        
+        if (result.status === 'Success') {
+          Swal.fire({ title: 'สำเร็จ!', text: 'อัปเดตข้อมูลเรียบร้อย', icon: 'success', confirmButtonText: 'ตกลง' })
+          .then(() => location.reload());
+        }
+      } catch (err) {
+        Swal.fire('ผิดพลาด', 'อัปเดตไม่สำเร็จ: ' + err.message, 'error');
+        btn.disabled = false; btn.innerText = "อัปเดตข้อมูล";
+      }
+    }
+
+    // ------------------ โหมดลบข้อมูล (Delete) ------------------
+    async function deleteBooking(rowId) {
+      const result = await Swal.fire({
+        title: 'ยืนยันการลบ?',
+        text: "ข้อมูลนี้จะถูกลบออกจากระบบถาวร ไม่สามารถกู้คืนได้!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'ใช่, ลบเลย!',
+        cancelButtonText: 'ยกเลิก'
+      });
+
+      if (result.isConfirmed) {
+        Swal.fire({ title: 'กำลังลบข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+        try {
+          const res = await fetch(GAS_URL, {
+            method: 'POST', redirect: "follow",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: 'deleteBooking', rowId: rowId })
+          });
+          const data = await res.json();
+          if (data.status === 'Success') {
+            Swal.fire({ title: 'ลบสำเร็จ!', icon: 'success', confirmButtonText: 'ตกลง' })
+            .then(() => location.reload());
+          }
+        } catch (err) {
+          Swal.fire('ผิดพลาด', 'ลบไม่สำเร็จ: ' + err.message, 'error');
+        }
+      }
+    }
+
+    // ------------------ โหมดบันทึกข้อมูลใหม่ ------------------
     async function submitForm() {
       let form = document.getElementById("bookingForm");
       if (!form.checkValidity()) { form.reportValidity(); return; }
@@ -482,10 +548,8 @@
         const result = await res.json();
         
         if (result.status === 'Success') {
-          Swal.fire({
-            title: 'สำเร็จ!', text: 'บันทึกข้อมูลเรียบร้อย', icon: 'success',
-            customClass: { confirmButton: 'btn-main' }, buttonsStyling: false
-          }).then(() => location.reload());
+          Swal.fire({ title: 'สำเร็จ!', text: 'บันทึกข้อมูลเรียบร้อย', icon: 'success', confirmButtonText: 'ตกลง' })
+          .then(() => location.reload());
         }
       } catch (err) {
         Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ: ' + err.message, 'error');

@@ -1,0 +1,99 @@
+const SHEET_ID = '1buRNE57-rBDaFXcBrO0suQklQv54EaYHjjAsm7MLZds';
+
+function doGet() {
+  return HtmlService.createTemplateFromFile('index')
+      .evaluate()
+      .setTitle('ระบบจองรถ')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+function getDashboardData() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Bookings');
+  return sheet.getDataRange().getDisplayValues();
+}
+
+function getVehicleData() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Vehicles');
+  if (!sheet) return [];
+  const data = sheet.getDataRange().getDisplayValues();
+  if (data.length > 0) data.shift();
+  return data;
+}
+
+function getMasterData() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Customers');
+  if (!sheet) return { customers: [], pickups: [], dropoffs: [] };
+  
+  const values = sheet.getDataRange().getDisplayValues();
+  let customers = [];
+  let pickups = [];
+  let dropoffs = [];
+  
+  for (let i = 1; i < values.length; i++) {
+    if (values[i][0]) customers.push(values[i][0]);
+    if (values[i][1]) pickups.push(values[i][1]);
+    if (values[i][2]) dropoffs.push(values[i][2]);
+  }
+  
+  return { customers, pickups, dropoffs };
+}
+
+function addMasterItem(type, newValue) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Customers');
+  let colIndex = 1; 
+  
+  if (type === 'pickup') colIndex = 2;
+  if (type === 'dropoff') colIndex = 3;
+  
+  const lastRow = sheet.getLastRow();
+  let nextRow = 2;
+  if (lastRow > 0) {
+    let colValues = sheet.getRange(1, colIndex, lastRow, 1).getValues().flat();
+    nextRow = colValues.filter(String).length + 1;
+  }
+  
+  sheet.getRange(nextRow, colIndex).setValue(newValue);
+  return "Success";
+}
+
+function generateJobNo() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Bookings');
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  const dateStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyMM");
+  
+  if (lastRow === 1) return "JOB-" + dateStr + "-001";
+  
+  const lastJobStr = sheet.getRange(lastRow, 1).getValue();
+  if (!lastJobStr || !lastJobStr.includes("-")) return "JOB-" + dateStr + "-001";
+  
+  const parts = lastJobStr.split("-");
+  const lastNumber = parseInt(parts[2]);
+  
+  if (isNaN(lastNumber)) return "JOB-" + dateStr + "-001";
+  
+  const newNumber = ("000" + (lastNumber + 1)).slice(-3);
+  return "JOB-" + dateStr + "-" + newNumber;
+}
+
+function saveBooking(formData) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName('Bookings');
+  const jobNo = generateJobNo();
+  
+  sheet.appendRow([
+    jobNo,
+    formData.date,
+    formData.customer,
+    formData.pickup,
+    formData.dropoff,
+    formData.qty,
+    formData.vehicle,
+    formData.driver
+  ]);
+  return "Success";
+}

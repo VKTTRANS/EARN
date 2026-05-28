@@ -13,92 +13,173 @@
     :root {
       --primary: #4f46e5;
       --primary-hover: #4338ca;
-      --bg: #f3f4f6;
+      --bg: #f1f5f9;
       --card-bg: #ffffff;
-      --text: #1f2937;
-      --text-muted: #6b7280;
-      --border: #e5e7eb;
-      --input-bg: #f9fafb;
-      --radius-lg: 24px;
-      --radius-md: 16px;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --input-bg: #f8fafc;
+      --radius-lg: 16px;
     }
 
-    body { font-family: 'Prompt', sans-serif; background-color: var(--bg); color: var(--text); padding: 2rem 0; }
+    /* บังคับความสูงเต็มจอ เพื่อให้ส่วนหัว/ท้ายนิ่ง และเลื่อนแค่ตาราง */
+    body { 
+      font-family: 'Prompt', sans-serif; 
+      background-color: var(--bg); 
+      color: var(--text); 
+      height: 100vh; 
+      margin: 0; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      padding: 10px 0;
+      overflow: hidden; 
+    }
     
-    /* กาง 95% โดยไม่มีลิมิต max-width แล้ว */
-    .main-wrap { width: 95%; max-width: 100%; margin: 0 auto; background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 20px 40px rgba(0,0,0,0.04); padding: 2.5rem; }
+    /* กาง 95% ของจอ และใช้ Flexbox จัดการพื้นที่แนวตั้ง */
+    .main-wrap { 
+      width: 96%; 
+      height: 100%; 
+      display: flex; 
+      flex-direction: column;
+      background: var(--card-bg); 
+      border-radius: var(--radius-lg); 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+      padding: 1.25rem 1.5rem; 
+      border: 1px solid #fff;
+    }
     
-    h2 { font-weight: 700; color: #111827; letter-spacing: -0.5px; }
+    /* ปรับขนาดส่วนหัวให้เล็กลง */
+    h2 { font-weight: 700; font-size: 1.4rem; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;}
 
-    .btn-main { background: linear-gradient(135deg, var(--primary), #3b82f6); border: none; color: white; padding: 12px 28px; border-radius: 12px; font-weight: 500; box-shadow: 0 8px 16px rgba(79, 70, 229, 0.2); transition: all 0.3s ease; white-space: nowrap; }
-    .btn-main:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(79, 70, 229, 0.3); color: white; }
+    .btn-main { background: var(--primary); border: none; color: white; padding: 8px 20px; font-size: 0.9rem; border-radius: 8px; font-weight: 500; transition: all 0.2s; white-space: nowrap; }
+    .btn-main:hover { background: var(--primary-hover); color: white; }
 
-    /* ปรับแต่งตารางให้สไลด์ลื่นขึ้นในมือถือ */
-    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
-    .table-modern { margin-top: 1.5rem; border-collapse: separate; border-spacing: 0; width: 100%; min-width: 900px; }
-    .table-modern th { background: #f8fafc; color: var(--text-muted); font-weight: 600; padding: 16px; border-bottom: 2px solid var(--border); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-    .table-modern td { padding: 16px; vertical-align: middle; border-bottom: 1px solid var(--border); color: #374151; font-size: 0.95rem; }
+    /* โซนตัวกรอง */
+    .filter-zone { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 15px; margin-bottom: 10px; }
+    .filter-zone input, .filter-zone select { font-size: 0.85rem; border-color: #cbd5e1; }
 
-    .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-    .form-control, .form-select { background-color: var(--input-bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 1rem; color: var(--text); transition: all 0.2s; box-shadow: none; }
-    .form-control:focus, .form-select:focus { background-color: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+    /* โซนตาราง ให้ยืดหยุ่นและ Scroll ได้ */
+    .table-container { 
+      flex: 1; 
+      overflow-y: auto; 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      background: #fff;
+    }
     
-    .input-group .btn-outline { background: var(--input-bg); border: 1.5px solid var(--border); border-left: none; color: var(--primary); font-weight: bold; border-radius: 0 12px 12px 0; padding: 0 20px; transition: 0.2s; }
-    .input-group .btn-outline:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    /* ปรับฟอนต์ตารางให้เล็กและคลีน */
+    .table-modern { margin: 0; width: 100%; min-width: 1000px; border-collapse: collapse; }
+    .table-modern th { 
+      background: #f1f5f9; 
+      color: var(--text-muted); 
+      font-weight: 600; 
+      padding: 12px 15px; 
+      font-size: 0.8rem; 
+      text-transform: uppercase; 
+      position: sticky; 
+      top: 0; 
+      z-index: 10; 
+      box-shadow: 0 1px 0 var(--border); 
+      white-space: nowrap; 
+    }
+    .table-modern td { padding: 10px 15px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 
-    .vehicle-card { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1rem; transition: 0.3s; }
-    .vehicle-card:hover { border-color: var(--primary); background: #f1f5f9; }
+    /* Modal Form Styles */
+    .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
+    .form-control, .form-select { border-radius: 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; }
+    .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+    .modal-content { border-radius: var(--radius-lg); border: none; }
+    .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .modal-body { padding: 1.5rem; }
+    
+    .vehicle-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
 
-    .modal-content { border-radius: var(--radius-lg); border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-    .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
-    .modal-title { font-weight: 700; color: #111827; }
-    .modal-body { padding: 2rem; }
-    .modal-footer { padding: 1.5rem 2rem; border-top: 1px solid var(--border); background: #f9fafb; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
-
+    /* Mobile Adaptations */
     @media (max-width: 768px) {
-      body { padding: 0; background: var(--card-bg); }
-      .main-wrap { width: 100%; border-radius: 0; padding: 1.25rem; box-shadow: none; }
-      .btn-main { width: 100%; }
-      .table-modern { font-size: 0.85rem; min-width: 800px; } /* บังคับกว้างเพื่อให้เกิด Scroll บนมือถือ ป้องกันตารางบีบ */
-      
+      body { padding: 0; }
+      .main-wrap { width: 100%; border-radius: 0; padding: 1rem; }
+      .filter-zone { flex-direction: column; align-items: stretch !important; gap: 10px; }
+      .filter-zone .d-flex { flex-wrap: wrap; width: 100%; }
+      .filter-zone input, .filter-zone select { width: 100% !important; }
       .modal-dialog { margin: 0; display: flex; align-items: flex-end; min-height: 100%; }
-      .modal-content { border-radius: 30px 30px 0 0; padding-bottom: env(safe-area-inset-bottom); }
-      .modal-body { padding: 1.5rem; max-height: 85vh; overflow-y: auto; }
+      .modal-content { border-radius: 24px 24px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+      .modal-body { max-height: 80vh; overflow-y: auto; }
     }
   </style>
 </head>
 <body>
 
   <div class="main-wrap">
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>🚚 Smart Booking</h2>
       <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">
-        + สร้างรายการใหม่
+        + สร้างรายการ
       </button>
     </div>
 
-    <div class="table-responsive">
-      <table class="table-modern">
+    <div class="filter-zone d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 ค้นหา (เลขงาน, ลูกค้า...)" style="width: 220px;" onkeyup="applyFilters()">
+        
+        <div class="input-group input-group-sm" style="width: 170px;">
+          <span class="input-group-text bg-white text-muted border-end-0">ด/ป</span>
+          <input type="month" id="monthFilter" class="form-control border-start-0" onchange="document.getElementById('dateFilter').value=''; applyFilters()">
+        </div>
+
+        <div class="input-group input-group-sm" style="width: 170px;">
+          <span class="input-group-text bg-white text-muted border-end-0">ว/ด/ป</span>
+          <input type="date" id="dateFilter" class="form-control border-start-0" onchange="document.getElementById('monthFilter').value=''; applyFilters()">
+        </div>
+        
+        <button class="btn btn-sm btn-light border text-muted" onclick="clearFilters()">ล้างค่า</button>
+      </div>
+      
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-muted" style="font-size: 0.8rem;">แสดง:</span>
+        <select id="limitSelect" class="form-select form-select-sm" style="width: 90px;" onchange="changeLimit()">
+          <option value="30">30</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="all">ทั้งหมด</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="table-modern table-hover">
         <thead>
           <tr>
             <th>เลขงาน</th><th>วันที่</th><th>ลูกค้า</th><th>สถานที่รับ</th><th>สถานที่ส่ง</th><th>รถ/ประเภท</th><th>ทะเบียน</th><th>คนขับ</th><th>หมายเหตุ</th>
           </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody id="tableBody">
+          </tbody>
       </table>
     </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3 px-1 text-muted" style="font-size: 0.8rem;">
+      <div>พบข้อมูล <span id="showingCount" class="fw-bold text-dark">0</span> จาก <span id="totalCount">0</span> รายการ</div>
+      <div class="d-flex gap-2 align-items-center">
+        <button class="btn btn-sm btn-light border" onclick="prevPage()">◀ ก่อนหน้า</button>
+        <span id="pageInfo" class="fw-medium text-dark">หน้า 1/1</span>
+        <button class="btn btn-sm btn-light border" onclick="nextPage()">ถัดไป ▶</button>
+      </div>
+    </div>
+
   </div>
 
   <div class="modal fade" id="bookingModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">เพิ่มรายการ Booking</h5>
+          <h5 class="modal-title fw-bold">เพิ่มรายการ Booking</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="bookingForm">
-            <div class="row g-3 mb-4">
+            <div class="row g-3 mb-3">
               <div class="col-md-6">
                 <label class="form-label">วันที่เริ่มงาน</label>
                 <input type="date" class="form-control" name="date" required>
@@ -107,47 +188,41 @@
                 <label class="form-label">จำนวนรถ (คัน)</label>
                 <input type="number" class="form-control" name="qty" id="qtyInput" value="1" min="1" max="20" onchange="generateVehicleFields()" required>
               </div>
-              
               <div class="col-md-12">
                 <label class="form-label">ลูกค้า</label>
                 <div class="input-group">
                   <select class="form-select" id="customerSelect" name="customer" required><option value="">-- เลือกลูกค้า --</option></select>
-                  <button class="btn btn-outline" type="button" onclick="promptAddNew('customer', 'ชื่อลูกค้าใหม่')">+</button>
+                  <button class="btn btn-light border" type="button" onclick="promptAddNew('customer', 'ชื่อลูกค้าใหม่')">+</button>
                 </div>
               </div>
-              
               <div class="col-md-6">
                 <label class="form-label">สถานที่รับ</label>
                 <div class="input-group">
                   <select class="form-select" id="pickupSelect" name="pickup" required><option value="">-- เลือกสถานที่รับ --</option></select>
-                  <button class="btn btn-outline" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
+                  <button class="btn btn-light border" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
                 </div>
               </div>
-              
               <div class="col-md-6">
                 <label class="form-label">สถานที่ส่ง (พิมพ์ค้นหาได้)</label>
                 <div class="input-group">
                   <input type="text" class="form-control" list="dropoffOptions" id="dropoffInput" name="dropoff" placeholder="-- พิมพ์หรือเลือก --" autocomplete="off" required>
                   <datalist id="dropoffOptions"></datalist>
-                  <button class="btn btn-outline" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
+                  <button class="btn btn-light border" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
                 </div>
               </div>
-
               <div class="col-md-12 mt-3">
                 <label class="form-label">หมายเหตุ / รายละเอียดเพิ่มเติม</label>
-                <textarea class="form-control" name="remark" rows="2" placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
+                <input type="text" class="form-control" name="remark" placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)">
               </div>
             </div>
 
             <hr class="my-4 text-muted">
             <h6 class="fw-bold mb-3 text-primary">รายละเอียดรถและคนขับ</h6>
-            
             <div id="vehicleContainer"></div>
-
           </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light rounded-3 px-4 py-2 text-muted fw-medium" data-bs-dismiss="modal">ยกเลิก</button>
+        <div class="modal-footer bg-light border-top-0">
+          <button type="button" class="btn btn-light border" data-bs-dismiss="modal">ยกเลิก</button>
           <button type="button" class="btn-main" onclick="submitForm()" id="saveBtn">บันทึกข้อมูล</button>
         </div>
       </div>
@@ -164,6 +239,12 @@
 
     let vehicleList = [];
     let vehicleOptionsHTML = '<option value="">-- เลือกทะเบียน --</option>';
+    
+    // ตัวแปรสำหรับระบบ Filter & Pagination
+    let allDashboardData = []; // เก็บข้อมูลดั้งเดิมทั้งหมด
+    let filteredData = [];     // เก็บข้อมูลที่ผ่านการกรองแล้ว
+    let currentPage = 1;
+    let currentLimit = 30;
 
     window.onload = async function() {
       Swal.fire({ title: 'กำลังโหลดข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
@@ -171,13 +252,16 @@
         const response = await fetch(GAS_URL + "?action=getInitialData");
         const data = await response.json();
         
-        renderTable(data.dashboard);
-        processVehicles(data.vehicles);
+        // เก็บข้อมูลลงตัวแปรและตั้งให้แสดงรายการล่าสุดขึ้นก่อน (Reverse)
+        if(data.dashboard.length > 1) {
+          allDashboardData = data.dashboard.slice(1).reverse();
+        }
+        applyFilters(); // โหลดตารางครั้งแรก
         
+        processVehicles(data.vehicles);
         populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
         populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
         populateDatalist("dropoffOptions", data.master.dropoffs);
-        
         generateVehicleFields(); 
         Swal.close();
       } catch (err) {
@@ -185,38 +269,107 @@
       }
     };
 
-    function renderTable(data) {
-      let tbody = document.getElementById("tableBody");
-      let html = "";
-      for (let i = 1; i < data.length; i++) {
+    // ================= โซน Filter และแบ่งหน้า (Pagination) =================
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const dateFilter = document.getElementById('dateFilter').value;
+      const monthFilter = document.getElementById('monthFilter').value;
+
+      filteredData = allDashboardData.filter(row => {
+        // ค้นหาข้อความในทุกคอลัมน์
+        const rowText = row.join(' ').toLowerCase();
+        const matchSearch = search === '' || rowText.includes(search);
+        
+        // กรองวันที่ (คอลัมน์ที่ 1 คือวันที่)
+        let matchDate = true;
+        if (dateFilter) {
+          matchDate = row[1] && row[1].includes(dateFilter);
+        } else if (monthFilter) {
+          matchDate = row[1] && row[1].includes(monthFilter);
+        }
+        
+        return matchSearch && matchDate;
+      });
+
+      currentPage = 1; // เริ่มที่หน้าแรกเสมอเมื่อค้นหาใหม่
+      renderTablePage();
+    }
+
+    function changeLimit() {
+      const val = document.getElementById('limitSelect').value;
+      currentLimit = val === 'all' ? 'all' : parseInt(val);
+      currentPage = 1;
+      renderTablePage();
+    }
+
+    function clearFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('dateFilter').value = '';
+      document.getElementById('monthFilter').value = '';
+      applyFilters();
+    }
+
+    function renderTablePage() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      
+      if (filteredData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
+        document.getElementById('showingCount').innerText = 0;
+        document.getElementById('totalCount').innerText = allDashboardData.length;
+        document.getElementById('pageInfo').innerText = 'หน้า 1/1';
+        return;
+      }
+
+      const limit = currentLimit === 'all' ? filteredData.length : currentLimit;
+      const totalPages = Math.ceil(filteredData.length / limit);
+      const startIndex = (currentPage - 1) * limit;
+      const endIndex = Math.min(startIndex + limit, filteredData.length);
+
+      let html = '';
+      for (let i = startIndex; i < endIndex; i++) {
+        let row = filteredData[i];
         html += `<tr>
-          <td class="fw-bold text-primary">${data[i][0] || ''}</td>
-          <td>${data[i][1] || ''}</td>
-          <td class="fw-medium">${data[i][2] || ''}</td>
-          <td>${data[i][3] || ''}</td>
-          <td>${data[i][4] || ''}</td>
-          <td>${data[i][5] || '1'} / <span class="badge bg-secondary">${data[i][6] || '-'}</span></td>
-          <td class="fw-bold">${data[i][7] || ''}</td>
-          <td>${data[i][8] || ''}</td>
-          <td><span class="text-muted" style="font-size: 0.85rem;">${data[i][9] || '-'}</span></td>
+          <td class="fw-bold text-primary" style="white-space: nowrap;">${row[0] || ''}</td>
+          <td style="white-space: nowrap;">${row[1] || ''}</td>
+          <td class="fw-medium">${row[2] || ''}</td>
+          <td>${row[3] || ''}</td>
+          <td>${row[4] || ''}</td>
+          <td style="white-space: nowrap;">${row[5] || '1'} / <span class="badge bg-secondary rounded-pill px-2">${row[6] || '-'}</span></td>
+          <td class="fw-bold" style="white-space: nowrap;">${row[7] || ''}</td>
+          <td style="white-space: nowrap;">${row[8] || ''}</td>
+          <td><span class="text-muted d-inline-block text-truncate" style="max-width: 120px;" title="${row[9] || ''}">${row[9] || '-'}</span></td>
         </tr>`;
       }
       tbody.innerHTML = html;
+
+      document.getElementById('showingCount').innerText = endIndex - startIndex;
+      document.getElementById('totalCount').innerText = filteredData.length;
+      document.getElementById('pageInfo').innerText = `หน้า ${currentPage}/${totalPages}`;
     }
+
+    function prevPage() {
+      if (currentPage > 1) { currentPage--; renderTablePage(); }
+    }
+
+    function nextPage() {
+      const limit = currentLimit === 'all' ? filteredData.length : currentLimit;
+      const totalPages = Math.ceil(filteredData.length / limit);
+      if (currentPage < totalPages) { currentPage++; renderTablePage(); }
+    }
+    // =======================================================================
+
 
     function processVehicles(data) {
       vehicleList = data;
       vehicleOptionsHTML = '<option value="">-- เลือกทะเบียน --</option>';
-      data.forEach(row => {
-        if(row[0]) vehicleOptionsHTML += `<option value="${row[0]}">${row[0]} ${row[1] ? `(${row[1]})` : ''}</option>`;
-      });
+      data.forEach(row => { if(row[0]) vehicleOptionsHTML += `<option value="${row[0]}">${row[0]} ${row[1] ? `(${row[1]})` : ''}</option>`; });
     }
 
     function generateVehicleFields() {
       const qty = parseInt(document.getElementById('qtyInput').value) || 1;
       const container = document.getElementById('vehicleContainer');
       container.innerHTML = ''; 
-
       const carTypes = ['4 ล้อ', '6 ล้อ', '6 ล้อพ่วง', '10 ล้อ', '10 ล้อพ่วง', 'เทรลเลอร์'];
       let typeOptions = '<option value="">-- เลือกประเภทรถ --</option>';
       carTypes.forEach(t => typeOptions += `<option value="${t}">${t}</option>`);
@@ -224,21 +377,19 @@
       for(let i = 1; i <= qty; i++) {
         container.innerHTML += `
           <div class="vehicle-card mb-3">
-            <h6 class="fw-bold text-primary mb-3">🚘 รถคันที่ ${i}</h6>
-            <div class="row g-3">
+            <h6 class="fw-bold text-dark mb-2" style="font-size:0.9rem;">🚘 รถคันที่ ${i}</h6>
+            <div class="row g-2">
               <div class="col-md-4">
-                <label class="form-label">ประเภทรถ</label>
-                <select class="form-select v-type" required>${typeOptions}</select>
+                <label class="form-label">ประเภท</label>
+                <select class="form-select form-select-sm v-type" required>${typeOptions}</select>
               </div>
               <div class="col-md-4">
-                <label class="form-label">ทะเบียนรถ</label>
-                <select class="form-select v-plate" onchange="autoFillDriver(this, ${i})" required>
-                  ${vehicleOptionsHTML}
-                </select>
+                <label class="form-label">ทะเบียน</label>
+                <select class="form-select form-select-sm v-plate" onchange="autoFillDriver(this, ${i})" required>${vehicleOptionsHTML}</select>
               </div>
               <div class="col-md-4">
                 <label class="form-label">คนขับ (แก้ไขได้)</label>
-                <input type="text" class="form-control v-driver" id="driverInput${i}" required>
+                <input type="text" class="form-control form-control-sm v-driver" id="driverInput${i}" required>
               </div>
             </div>
           </div>
@@ -247,10 +398,8 @@
     }
 
     function autoFillDriver(selectObj, index) {
-      const selectedPlate = selectObj.value;
-      const driverInput = document.getElementById(`driverInput${index}`);
-      const matched = vehicleList.find(v => v[0] === selectedPlate);
-      driverInput.value = (matched && matched[2]) ? matched[2] : "";
+      const matched = vehicleList.find(v => v[0] === selectObj.value);
+      document.getElementById(`driverInput${index}`).value = (matched && matched[2]) ? matched[2] : "";
     }
 
     function populateDropdown(elementId, items, defaultText) {
@@ -273,7 +422,7 @@
         showCancelButton: true,
         confirmButtonText: 'บันทึก',
         cancelButtonText: 'ยกเลิก',
-        customClass: { confirmButton: 'btn-main mx-2', cancelButton: 'btn btn-light mx-2' },
+        customClass: { confirmButton: 'btn-main mx-2', cancelButton: 'btn btn-light border mx-2' },
         buttonsStyling: false,
         inputValidator: (value) => { if (!value) return 'กรุณากรอกข้อมูล!' }
       }).then(async (result) => {
@@ -307,11 +456,7 @@
       const vDrivers = document.querySelectorAll('.v-driver');
       
       for(let i = 0; i < vTypes.length; i++) {
-        vehiclesData.push({
-          type: vTypes[i].value,
-          plate: vPlates[i].value,
-          driver: vDrivers[i].value
-        });
+        vehiclesData.push({ type: vTypes[i].value, plate: vPlates[i].value, driver: vDrivers[i].value });
       }
 
       const formData = {
@@ -320,7 +465,7 @@
         pickup: form.pickup.value,
         dropoff: form.dropoff.value,
         qty: form.qty.value,
-        remark: form.remark.value, // ดึงค่าหมายเหตุส่งไป
+        remark: form.remark.value,
         vehicles: vehiclesData 
       };
 
@@ -338,7 +483,7 @@
         
         if (result.status === 'Success') {
           Swal.fire({
-            title: 'สำเร็จ!', text: 'บันทึกข้อมูล Booking เรียบร้อยแล้ว', icon: 'success',
+            title: 'สำเร็จ!', text: 'บันทึกข้อมูลเรียบร้อย', icon: 'success',
             customClass: { confirmButton: 'btn-main' }, buttonsStyling: false
           }).then(() => location.reload());
         }

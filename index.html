@@ -16,27 +16,26 @@
     h2 { font-weight: 700; font-size: 1.4rem; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;}
     .btn-main { background: var(--primary); border: none; color: white; padding: 8px 20px; font-size: 0.85rem; border-radius: 8px; font-weight: 500; transition: all 0.2s; white-space: nowrap; }
     .btn-main:hover { background: var(--primary-hover); color: white; }
+    
     .filter-zone { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 15px; margin-bottom: 10px; }
     .filter-zone input, .filter-zone select { font-size: 0.8rem; border-color: #cbd5e1; }
-    .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
     
+    .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
     .table-modern { margin: 0; width: 100%; min-width: 1100px; border-collapse: collapse; }
     .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 10px 12px; font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
     .table-modern td { padding: 8px 12px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
     
-    /* สลับสีตาราง (Zebra Striping) */
     .table-modern tbody tr:nth-child(even) { background-color: #f8fafc; }
     .table-modern tbody tr:nth-child(odd) { background-color: #ffffff; }
     .table-modern tbody tr:hover { background-color: #e2e8f0 !important; transition: background-color 0.2s; }
     
-    /* สีของประเภทรถแต่ละชนิดให้เด่นและแตกต่างกัน */
-    .badge-4wheel { background-color: #10b981; color: white; } /* เขียวสว่าง */
-    .badge-6wheel { background-color: #f59e0b; color: white; } /* เหลืองส้ม */
-    .badge-6wheel-p { background-color: #e11d48; color: white; } /* แดงชมพู */
-    .badge-10wheel { background-color: #0ea5e9; color: white; } /* ฟ้าสว่าง */
-    .badge-10wheel-p { background-color: #8b5cf6; color: white; } /* ม่วงสว่าง */
-    .badge-trailer { background-color: #334155; color: white; } /* ดำเทาเข้ม */
-    .badge-default { background-color: #94a3b8; color: white; } /* เทาพื้นฐาน */
+    .badge-4wheel { background-color: #10b981; color: white; } 
+    .badge-6wheel { background-color: #f59e0b; color: white; } 
+    .badge-6wheel-p { background-color: #e11d48; color: white; } 
+    .badge-10wheel { background-color: #0ea5e9; color: white; } 
+    .badge-10wheel-p { background-color: #8b5cf6; color: white; } 
+    .badge-trailer { background-color: #334155; color: white; } 
+    .badge-default { background-color: #94a3b8; color: white; } 
 
     .form-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
     .form-control, .form-select { border-radius: 8px; font-size: 0.85rem; border: 1px solid #cbd5e1; }
@@ -71,14 +70,37 @@
     <div class="filter-zone d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
         <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 ค้นหา (ลูกค้า, ทะเบียน...)" style="width: 220px;" onkeyup="applyFilters()">
-        <div class="input-group input-group-sm" style="width: 170px;">
-          <span class="input-group-text bg-white text-muted border-end-0">ด/ป</span>
-          <input type="month" id="monthFilter" class="form-control border-start-0" onchange="document.getElementById('dateFilter').value=''; applyFilters()">
-        </div>
-        <div class="input-group input-group-sm" style="width: 170px;">
-          <span class="input-group-text bg-white text-muted border-end-0">ว/ด/ป</span>
-          <input type="date" id="dateFilter" class="form-control border-start-0" onchange="document.getElementById('monthFilter').value=''; applyFilters()">
-        </div>
+        
+        <select id="filterYear" class="form-select form-select-sm" style="width: 90px;" onchange="applyFilters()">
+          <option value="">-- ปี --</option>
+        </select>
+        
+        <select id="filterMonth" class="form-select form-select-sm" style="width: 120px;" onchange="applyFilters()">
+          <option value="">-- เดือน --</option>
+          <option value="01">มกราคม</option>
+          <option value="02">กุมภาพันธ์</option>
+          <option value="03">มีนาคม</option>
+          <option value="04">เมษายน</option>
+          <option value="05">พฤษภาคม</option>
+          <option value="06">มิถุนายน</option>
+          <option value="07">กรกฎาคม</option>
+          <option value="08">สิงหาคม</option>
+          <option value="09">กันยายน</option>
+          <option value="10">ตุลาคม</option>
+          <option value="11">พฤศจิกายน</option>
+          <option value="12">ธันวาคม</option>
+        </select>
+
+        <select id="filterDay" class="form-select form-select-sm" style="width: 80px;" onchange="applyFilters()">
+          <option value="">- วัน -</option>
+          <script>
+            for (let i = 1; i <= 31; i++) {
+              let day = i.toString().padStart(2, '0');
+              document.write(`<option value="${day}">${day}</option>`);
+            }
+          </script>
+        </select>
+
         <button class="btn btn-sm btn-light border text-muted" onclick="clearFilters()">ล้างค่า</button>
       </div>
       <div class="d-flex align-items-center gap-2">
@@ -265,6 +287,7 @@
         
         if(data.dashboard.length > 1) {
           allDashboardData = data.dashboard.slice(1).reverse();
+          extractAvailableYears(allDashboardData); // ดึงปีที่มีอยู่ในระบบมาใส่ Dropdown อัตโนมัติ
         }
         applyFilters(); 
         processVehicles(data.vehicles);
@@ -284,17 +307,58 @@
       }
     };
 
+    // ฟังก์ชันดึงปีจากข้อมูลทั้งหมดที่มี เพื่อสร้างตัวเลือกใน Dropdown ปี
+    function extractAvailableYears(dataList) {
+      let years = new Set();
+      dataList.forEach(row => {
+        let dateStr = row[1];
+        if (dateStr) {
+          // สมมติว่ารูปแบบวันที่ในชีตเป็น YYYY-MM-DD หรือแบบอื่นที่มีปี 4 หลัก
+          let match = String(dateStr).match(/\d{4}/); 
+          if (match) years.add(match[0]);
+        }
+      });
+      
+      let yearSelect = document.getElementById("filterYear");
+      let sortedYears = Array.from(years).sort().reverse(); // เรียงจากปีใหม่สุดไปเก่าสุด
+      
+      sortedYears.forEach(year => {
+        yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+      });
+    }
+
+    // ฟังก์ชันตัวกรองแบบใหม่ (แยกเช็ค ปี เดือน วัน)
     function applyFilters() {
       const search = document.getElementById('searchInput').value.toLowerCase();
-      const dateFilter = document.getElementById('dateFilter').value;
-      const monthFilter = document.getElementById('monthFilter').value;
+      const fYear = document.getElementById('filterYear').value;
+      const fMonth = document.getElementById('filterMonth').value;
+      const fDay = document.getElementById('filterDay').value;
 
       filteredData = allDashboardData.filter(row => {
         const rowText = row.join(' ').toLowerCase();
         const matchSearch = search === '' || rowText.includes(search);
+        
         let matchDate = true;
-        if (dateFilter) matchDate = row[1] && row[1].includes(dateFilter);
-        else if (monthFilter) matchDate = row[1] && row[1].includes(monthFilter);
+        let dateVal = String(row[1] || ''); // คอลัมน์วันที่
+        
+        // แปลงวันที่ให้อยู่ในรูปแบบที่แน่นอน (เพื่อการค้นหาที่แม่นยำ)
+        let dDate = new Date(dateVal);
+        
+        if (dateVal && !isNaN(dDate.getTime())) {
+          let rowYear = dDate.getFullYear().toString();
+          let rowMonth = (dDate.getMonth() + 1).toString().padStart(2, '0');
+          let rowDay = dDate.getDate().toString().padStart(2, '0');
+
+          if (fYear && rowYear !== fYear) matchDate = false;
+          if (fMonth && rowMonth !== fMonth) matchDate = false;
+          if (fDay && rowDay !== fDay) matchDate = false;
+        } else {
+           // กรณีรูปแบบวันที่อ่านเป็น Date ไม่ได้ ให้ค้นหาแบบข้อความดิบ
+           if (fYear && !dateVal.includes(fYear)) matchDate = false;
+           if (fMonth && !dateVal.includes("-" + fMonth + "-") && !dateVal.includes("/" + fMonth + "/")) matchDate = false;
+           if (fDay && !dateVal.startsWith(fDay) && !dateVal.includes("-" + fDay) && !dateVal.includes("/" + fDay)) matchDate = false;
+        }
+
         return matchSearch && matchDate;
       });
 
@@ -311,12 +375,12 @@
 
     function clearFilters() {
       document.getElementById('searchInput').value = '';
-      document.getElementById('dateFilter').value = '';
-      document.getElementById('monthFilter').value = '';
+      document.getElementById('filterYear').value = '';
+      document.getElementById('filterMonth').value = '';
+      document.getElementById('filterDay').value = '';
       applyFilters();
     }
     
-    // ฟังก์ชันจับคู่สีกับประเภทรถ (เปลี่ยนสีให้จัดจ้านขึ้น)
     function getBadgeClass(type) {
       if(!type) return "badge-default";
       if(type.includes("4 ล้อ")) return "badge-4wheel";
@@ -349,7 +413,6 @@
       for (let i = startIndex; i < endIndex; i++) {
         let row = filteredData[i];
         
-        // ลบเครื่องหมาย ' ออกจากค่าจำนวนรถ (ถ้ามี) ก่อนนำไปแสดง
         let displayQty = row[5] || '1/1';
         if(displayQty.toString().startsWith("'")) {
             displayQty = displayQty.substring(1);
@@ -469,7 +532,6 @@
       document.getElementById('editPickup').value = row[3];
       document.getElementById('editDropoff').value = row[4];
       
-      // ลบเครื่องหมาย ' ออกเวลาดึงข้อมูลมาแสดงในฟอร์มแก้ไข
       let editQtyVal = row[5] || '';
       if(editQtyVal.toString().startsWith("'")) editQtyVal = editQtyVal.substring(1);
       document.getElementById('editQty').value = editQtyVal; 

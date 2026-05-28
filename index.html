@@ -3,59 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ระบบจองรถ</title>
+  <title>Smart Booking 2026</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     :root {
-      --primary-color: #2563eb;
-      --primary-hover: #1d4ed8;
-      --bg-color: #f8fafc;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg: #f3f4f6;
       --card-bg: #ffffff;
-      --text-main: #1e293b;
-      --border-color: #e2e8f0;
-      --radius: 16px;
+      --text: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --input-bg: #f9fafb;
+      --radius-lg: 24px;
+      --radius-md: 16px;
     }
-    body { font-family: 'Prompt', sans-serif; background-color: var(--bg-color); color: var(--text-main); padding: 20px 0; }
-    .main-container { width: 95%; margin: 0 auto; background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); padding: 30px; border: 1px solid rgba(255, 255, 255, 0.8); }
-    h2 { font-weight: 600; color: var(--text-main); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
-    .btn-custom { border-radius: 10px; padding: 10px 20px; font-weight: 500; transition: all 0.2s; }
-    .btn-primary-custom { background-color: var(--primary-color); border: none; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-    .btn-primary-custom:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
-    .table-custom th { background-color: #f1f5f9; color: #475569; font-weight: 500; border-bottom: 2px solid var(--border-color); padding: 15px; white-space: nowrap; }
-    .table-custom td { padding: 15px; vertical-align: middle; border-bottom: 1px solid var(--border-color); }
-    .form-control, .form-select { border-radius: 10px; padding: 12px 15px; border: 1px solid var(--border-color); background-color: #f8fafc; transition: all 0.2s; }
-    .form-control:focus, .form-select:focus { background-color: #fff; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-    .input-group .btn { border-radius: 0 10px 10px 0; padding: 0 20px; border: 1px solid var(--border-color); background: white; color: var(--text-main); font-weight: 600; }
-    .modal-content { border-radius: var(--radius); border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-    .modal-header { border-bottom: 1px solid var(--border-color); padding: 20px 24px; }
-    .modal-body { padding: 24px; }
-    .modal-footer { border-top: 1px solid var(--border-color); padding: 20px 24px; }
+
+    body { font-family: 'Prompt', sans-serif; background-color: var(--bg); color: var(--text); padding: 2rem 0; }
+    
+    .main-wrap { width: 95%; max-width: 1400px; margin: 0 auto; background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 20px 40px rgba(0,0,0,0.04); padding: 2.5rem; }
+    
+    h2 { font-weight: 700; color: #111827; letter-spacing: -0.5px; }
+
+    .btn-main { background: linear-gradient(135deg, var(--primary), #3b82f6); border: none; color: white; padding: 12px 28px; border-radius: 12px; font-weight: 500; box-shadow: 0 8px 16px rgba(79, 70, 229, 0.2); transition: all 0.3s ease; }
+    .btn-main:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(79, 70, 229, 0.3); color: white; }
+
+    .table-modern { margin-top: 1.5rem; border-collapse: separate; border-spacing: 0; width: 100%; }
+    .table-modern th { background: #f8fafc; color: var(--text-muted); font-weight: 600; padding: 16px; border-bottom: 2px solid var(--border); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .table-modern td { padding: 16px; vertical-align: middle; border-bottom: 1px solid var(--border); color: #374151; font-size: 0.95rem; }
+
+    /* Modern Form Inputs */
+    .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .form-control, .form-select { background-color: var(--input-bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 1rem; color: var(--text); transition: all 0.2s; box-shadow: none; }
+    .form-control:focus, .form-select:focus { background-color: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+    
+    .input-group .btn-outline { background: var(--input-bg); border: 1.5px solid var(--border); border-left: none; color: var(--primary); font-weight: bold; border-radius: 0 12px 12px 0; padding: 0 20px; transition: 0.2s; }
+    .input-group .btn-outline:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .vehicle-card { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1rem; transition: 0.3s; }
+    .vehicle-card:hover { border-color: var(--primary); background: #f1f5f9; }
+
+    /* Modal Styling */
+    .modal-content { border-radius: var(--radius-lg); border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+    .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
+    .modal-title { font-weight: 700; color: #111827; }
+    .modal-body { padding: 2rem; }
+    .modal-footer { padding: 1.5rem 2rem; border-top: 1px solid var(--border); background: #f9fafb; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+
+    /* Mobile Responsive (Bottom Sheet Style) */
     @media (max-width: 768px) {
-      .main-container { width: 100%; padding: 15px; border-radius: 0; box-shadow: none; }
-      .btn-custom { width: 100%; margin-bottom: 15px; }
-      .table-custom { font-size: 13px; }
-      body { padding: 0; }
+      body { padding: 0; background: var(--card-bg); }
+      .main-wrap { width: 100%; border-radius: 0; padding: 1.25rem; box-shadow: none; }
+      .btn-main { width: 100%; }
+      .table-modern { font-size: 0.85rem; }
+      
+      .modal-dialog { margin: 0; display: flex; align-items: flex-end; min-height: 100%; }
+      .modal-content { border-radius: 30px 30px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+      .modal-body { padding: 1.5rem; max-height: 80vh; overflow-y: auto; }
     }
   </style>
 </head>
 <body>
 
-  <div class="main-container">
-    <h2>🚚 ระบบ Booking รถ</h2>
-    <div>
-      <button type="button" class="btn-custom btn-primary-custom" data-bs-toggle="modal" data-bs-target="#bookingModal">
-        + เพิ่มรายการจอง
+  <div class="main-wrap">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <h2>🚚 Smart Booking</h2>
+      <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">
+        + สร้างรายการใหม่
       </button>
     </div>
-    <div class="table-responsive mt-3">
-      <table class="table table-hover table-custom">
+
+    <div class="table-responsive">
+      <table class="table-modern">
         <thead>
           <tr>
-            <th>เลขงาน</th><th>วันที่</th><th>ลูกค้า</th><th>สถานที่รับ</th><th>สถานที่ส่ง</th><th>จำนวนรถ</th><th>ทะเบียนรถ</th><th>คนขับ</th>
+            <th>เลขงาน</th><th>วันที่</th><th>ลูกค้า</th><th>สถานที่รับ</th><th>สถานที่ส่ง</th><th>รถ/ประเภท</th><th>ทะเบียน</th><th>คนขับ</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -64,91 +90,90 @@
   </div>
 
   <div class="modal fade" id="bookingModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold">เพิ่มรายการ Booking</h5>
+          <h5 class="modal-title">เพิ่มรายการ Booking</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="bookingForm">
-            <div class="mb-3">
-              <label class="form-label fw-medium text-muted">วันที่เริ่มงาน</label>
-              <input type="date" class="form-control" name="date" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-medium text-muted">ลูกค้า</label>
-              <div class="input-group">
-                <select class="form-select" id="customerSelect" name="customer" required><option value="">-- เลือกลูกค้า --</option></select>
-                <button class="btn" type="button" onclick="promptAddNew('customer', 'ชื่อลูกค้าใหม่')">+</button>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label">วันที่เริ่มงาน</label>
+                <input type="date" class="form-control" name="date" required>
               </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-medium text-muted">สถานที่รับ</label>
-              <div class="input-group">
-                <select class="form-select" id="pickupSelect" name="pickup" required><option value="">-- เลือกสถานที่รับ --</option></select>
-                <button class="btn" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
+              <div class="col-md-6">
+                <label class="form-label">จำนวนรถ (คัน)</label>
+                <input type="number" class="form-control" name="qty" id="qtyInput" value="1" min="1" max="20" onchange="generateVehicleFields()" required>
               </div>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label fw-medium text-muted">สถานที่ส่ง (พิมพ์ค้นหาได้)</label>
-              <div class="input-group">
-                <input type="text" class="form-control" list="dropoffOptions" id="dropoffInput" name="dropoff" placeholder="-- พิมพ์ค้นหาหรือเลือก --" autocomplete="off" required>
-                <datalist id="dropoffOptions"></datalist>
-                <button class="btn" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
+              
+              <div class="col-md-12">
+                <label class="form-label">ลูกค้า</label>
+                <div class="input-group">
+                  <select class="form-select" id="customerSelect" name="customer" required><option value="">-- เลือกลูกค้า --</option></select>
+                  <button class="btn btn-outline" type="button" onclick="promptAddNew('customer', 'ชื่อลูกค้าใหม่')">+</button>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">สถานที่รับ</label>
+                <div class="input-group">
+                  <select class="form-select" id="pickupSelect" name="pickup" required><option value="">-- เลือกสถานที่รับ --</option></select>
+                  <button class="btn btn-outline" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">สถานที่ส่ง (พิมพ์ค้นหาได้)</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" list="dropoffOptions" id="dropoffInput" name="dropoff" placeholder="-- พิมพ์หรือเลือก --" autocomplete="off" required>
+                  <datalist id="dropoffOptions"></datalist>
+                  <button class="btn btn-outline" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
+                </div>
               </div>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label fw-medium text-muted">จำนวนรถ</label>
-              <input type="number" class="form-control" name="qty" value="1" min="1" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-medium text-muted">ทะเบียนรถ</label>
-              <select class="form-select" id="vehicleSelect" name="vehicle" onchange="updateDriver()"><option value="">-- เลือกรถ --</option></select>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-medium text-muted">คนขับ (แก้ไขได้)</label>
-              <input type="text" class="form-control" id="driverInput" name="driver">
-            </div>
+            <hr class="my-4 text-muted">
+            <h6 class="fw-bold mb-3 text-primary">รายละเอียดรถและคนขับ</h6>
+            
+            <div id="vehicleContainer"></div>
+
           </form>
         </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-light btn-custom text-muted" data-bs-dismiss="modal">ยกเลิก</button>
-          <button type="button" class="btn-custom btn-primary-custom" onclick="submitForm()" id="saveBtn">บันทึกข้อมูล</button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light rounded-3 px-4 py-2 text-muted fw-medium" data-bs-dismiss="modal">ยกเลิก</button>
+          <button type="button" class="btn-main" onclick="submitForm()" id="saveBtn">บันทึกข้อมูล</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
     // ==========================================
-    // เชื่อมต่อ API กับ Google Apps Script (ใส่ URL ของคุณที่นี่)
+    // ใส่ URL จาก Google Apps Script ตรงนี้
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyZ2wgme02m-aJOmdChLErNbZmBkbu90p4gAB_t11ctWS3TBXwW3iZC7Jsfn8GQzEz6/exec"; 
     // ==========================================
 
     let vehicleList = [];
+    let vehicleOptionsHTML = '<option value="">-- เลือกทะเบียน --</option>';
 
     window.onload = async function() {
       Swal.fire({ title: 'กำลังโหลดข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-      
       try {
         const response = await fetch(GAS_URL + "?action=getInitialData");
         const data = await response.json();
         
         renderTable(data.dashboard);
-        loadVehicles(data.vehicles);
+        processVehicles(data.vehicles);
         
-        // โหลดข้อมูลใส่ Dropdown ธรรมดา
         populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
         populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
-        
-        // โหลดข้อมูลใส่ Datalist (แบบค้นหาได้) สำหรับสถานที่ส่ง
         populateDatalist("dropoffOptions", data.master.dropoffs);
         
+        generateVehicleFields(); // สร้างฟอร์มรถคันที่ 1 ตั้งแต่เปิดเว็บ
         Swal.close();
       } catch (err) {
         Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ' + err.message, 'error');
@@ -159,87 +184,112 @@
       let tbody = document.getElementById("tableBody");
       let html = "";
       for (let i = 1; i < data.length; i++) {
+        // อิงตาม Index โครงสร้างใหม่ 0:Job, 1:Date, 2:Cus, 3:Pick, 4:Drop, 5:Qty, 6:Type, 7:Plate, 8:Driver
         html += `<tr>
-          <td class="fw-medium">${data[i][0] || ''}</td><td>${data[i][1] || ''}</td>
-          <td>${data[i][2] || ''}</td><td>${data[i][3] || ''}</td><td>${data[i][4] || ''}</td>
-          <td>${data[i][5] || ''}</td><td>${data[i][6] || ''}</td><td>${data[i][7] || ''}</td>
+          <td class="fw-bold text-primary">${data[i][0] || ''}</td>
+          <td>${data[i][1] || ''}</td>
+          <td class="fw-medium">${data[i][2] || ''}</td>
+          <td>${data[i][3] || ''}</td>
+          <td>${data[i][4] || ''}</td>
+          <td>${data[i][5] || '1'} / <span class="badge bg-secondary">${data[i][6] || '-'}</span></td>
+          <td class="fw-bold">${data[i][7] || ''}</td>
+          <td>${data[i][8] || ''}</td>
         </tr>`;
       }
       tbody.innerHTML = html;
     }
 
-    function populateDropdown(elementId, items, defaultText) {
-      let select = document.getElementById(elementId);
-      let html = `<option value="">${defaultText}</option>`; 
-      items.forEach(item => {
-        if(item) html += `<option value="${item}">${item}</option>`;
-      });
-      select.innerHTML = html;
-    }
-
-    // ฟังก์ชันใหม่สำหรับโหลดข้อมูลเข้า Datalist (ช่องค้นหา)
-    function populateDatalist(elementId, items) {
-      let datalist = document.getElementById(elementId);
-      let html = '';
-      items.forEach(item => {
-        if(item) html += `<option value="${item}">`;
-      });
-      datalist.innerHTML = html;
-    }
-
-    function loadVehicles(data) {
+    function processVehicles(data) {
       vehicleList = data;
-      let select = document.getElementById("vehicleSelect");
-      let html = `<option value="">-- เลือกรถ --</option>`;
+      vehicleOptionsHTML = '<option value="">-- เลือกทะเบียน --</option>';
       data.forEach(row => {
-        if(row[0]) html += `<option value="${row[0]}">${row[0]} ${row[1] ? `(${row[1]})` : ''}</option>`;
+        if(row[0]) vehicleOptionsHTML += `<option value="${row[0]}">${row[0]} ${row[1] ? `(${row[1]})` : ''}</option>`;
       });
-      select.innerHTML = html;
     }
 
-    function updateDriver() {
-      let selectedVehicle = document.getElementById("vehicleSelect").value;
-      let matchedVehicle = vehicleList.find(v => v[0] === selectedVehicle);
-      document.getElementById("driverInput").value = (matchedVehicle && matchedVehicle[2]) ? matchedVehicle[2] : "";
+    // ฟังก์ชันสร้างช่องกรอกข้อมูลรถตามจำนวนคันที่ระบุ
+    function generateVehicleFields() {
+      const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+      const container = document.getElementById('vehicleContainer');
+      container.innerHTML = ''; // ล้างของเก่า
+
+      const carTypes = ['4 ล้อ', '6 ล้อ', '6 ล้อพ่วง', '10 ล้อ', '10 ล้อพ่วง', 'เทรลเลอร์'];
+      let typeOptions = '<option value="">-- เลือกประเภทรถ --</option>';
+      carTypes.forEach(t => typeOptions += `<option value="${t}">${t}</option>`);
+
+      for(let i = 1; i <= qty; i++) {
+        container.innerHTML += `
+          <div class="vehicle-card mb-3">
+            <h6 class="fw-bold text-primary mb-3">🚘 รถคันที่ ${i}</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">ประเภทรถ</label>
+                <select class="form-select v-type" required>${typeOptions}</select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">ทะเบียนรถ</label>
+                <select class="form-select v-plate" onchange="autoFillDriver(this, ${i})" required>
+                  ${vehicleOptionsHTML}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">คนขับ (แก้ไขได้)</label>
+                <input type="text" class="form-control v-driver" id="driverInput${i}" required>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // ดึงชื่อคนขับอัตโนมัติเมื่อเลือกทะเบียนรถ
+    function autoFillDriver(selectObj, index) {
+      const selectedPlate = selectObj.value;
+      const driverInput = document.getElementById(`driverInput${index}`);
+      const matched = vehicleList.find(v => v[0] === selectedPlate);
+      driverInput.value = (matched && matched[2]) ? matched[2] : "";
+    }
+
+    function populateDropdown(elementId, items, defaultText) {
+      let html = `<option value="">${defaultText}</option>`; 
+      items.forEach(item => { if(item) html += `<option value="${item}">${item}</option>`; });
+      document.getElementById(elementId).innerHTML = html;
+    }
+
+    function populateDatalist(elementId, items) {
+      let html = '';
+      items.forEach(item => { if(item) html += `<option value="${item}">`; });
+      document.getElementById(elementId).innerHTML = html;
     }
 
     async function promptAddNew(type, label) {
       Swal.fire({
         title: 'เพิ่ม' + label,
         input: 'text',
-        inputPlaceholder: 'พิมพ์' + label + 'ตรงนี้...',
+        inputPlaceholder: 'พิมพ์ที่นี่...',
         showCancelButton: true,
         confirmButtonText: 'บันทึก',
         cancelButtonText: 'ยกเลิก',
-        customClass: { confirmButton: 'btn-custom btn-primary-custom mx-2', cancelButton: 'btn-custom btn-light mx-2' },
+        customClass: { confirmButton: 'btn-main mx-2', cancelButton: 'btn btn-light mx-2' },
         buttonsStyling: false,
         inputValidator: (value) => { if (!value) return 'กรุณากรอกข้อมูล!' }
       }).then(async (result) => {
         if (result.isConfirmed) {
           Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-          
           try {
             const res = await fetch(GAS_URL, {
-              method: 'POST',
-              redirect: "follow",
+              method: 'POST', redirect: "follow",
               headers: { "Content-Type": "text/plain;charset=utf-8" },
               body: JSON.stringify({ action: 'addMasterItem', type: type, newValue: result.value.trim() })
             });
             const data = await res.json();
-            
             if(data.status === 'Success') {
-              // อัปเดตข้อมูลใหม่เข้าหน้าเว็บทันที
               populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
               populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
               populateDatalist("dropoffOptions", data.master.dropoffs);
-              
               Swal.fire('สำเร็จ!', 'เพิ่มข้อมูลเรียบร้อยแล้ว', 'success');
-            } else {
-              throw new Error(data.error);
             }
-          } catch(err) {
-            Swal.fire('ผิดพลาด', err.message, 'error');
-          }
+          } catch(err) { Swal.fire('ผิดพลาด', err.message, 'error'); }
         }
       });
     }
@@ -248,24 +298,36 @@
       let form = document.getElementById("bookingForm");
       if (!form.checkValidity()) { form.reportValidity(); return; }
       
-      let btn = document.getElementById("saveBtn");
-      btn.disabled = true; btn.innerText = "กำลังบันทึก...";
-      Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+      // ดึงข้อมูลจากช่องรถแต่ละคัน (Dynamic)
+      let vehiclesData = [];
+      const vTypes = document.querySelectorAll('.v-type');
+      const vPlates = document.querySelectorAll('.v-plate');
+      const vDrivers = document.querySelectorAll('.v-driver');
       
+      for(let i = 0; i < vTypes.length; i++) {
+        vehiclesData.push({
+          type: vTypes[i].value,
+          plate: vPlates[i].value,
+          driver: vDrivers[i].value
+        });
+      }
+
       const formData = {
         date: form.date.value,
         customer: form.customer.value,
         pickup: form.pickup.value,
-        dropoff: form.dropoff.value, // ดึงค่าจากช่องค้นหาได้ปกติ
+        dropoff: form.dropoff.value,
         qty: form.qty.value,
-        vehicle: form.vehicle.value,
-        driver: form.driver.value
+        vehicles: vehiclesData // ส่งเป็น Array ไปให้ Backend วนลูป
       };
+
+      let btn = document.getElementById("saveBtn");
+      btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+      Swal.fire({ title: 'กำลังสร้าง Booking...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
 
       try {
         const res = await fetch(GAS_URL, {
-          method: 'POST',
-          redirect: "follow",
+          method: 'POST', redirect: "follow",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({ action: 'saveBooking', data: formData })
         });
@@ -274,10 +336,8 @@
         if (result.status === 'Success') {
           Swal.fire({
             title: 'สำเร็จ!', text: 'บันทึกข้อมูล Booking เรียบร้อยแล้ว', icon: 'success',
-            customClass: { confirmButton: 'btn-custom btn-primary-custom' }, buttonsStyling: false
+            customClass: { confirmButton: 'btn-main' }, buttonsStyling: false
           }).then(() => location.reload());
-        } else {
-          throw new Error(result.error);
         }
       } catch (err) {
         Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ: ' + err.message, 'error');

@@ -119,7 +119,7 @@
           <tr>
             <th class="text-center">จัดการ</th>
             <th class="sortable" onclick="sortTable(1)">วันที่ <span class="sort-icon" id="sort-icon-1">↕</span></th>
-            <th class="sortable" onclick="sortTable(10)">เวลา <span class="sort-icon" id="sort-icon-10">↕</span></th>
+            <th class="sortable" onclick="sortTable(10)">เวลาขึ้นงาน <span class="sort-icon" id="sort-icon-10">↕</span></th>
             <th class="sortable" onclick="sortTable(2)">ลูกค้า <span class="sort-icon" id="sort-icon-2">↕</span></th>
             <th class="sortable" onclick="sortTable(3)">สถานที่รับ <span class="sort-icon" id="sort-icon-3">↕</span></th>
             <th class="sortable" onclick="sortTable(4)">สถานที่ส่ง <span class="sort-icon" id="sort-icon-4">↕</span></th>
@@ -159,8 +159,8 @@
                 <input type="date" class="form-control" name="date" required>
               </div>
               <div class="col-md-4">
-                <label class="form-label">เวลาขึ้นงาน</label>
-                <input type="time" class="form-control" name="time">
+                <label class="form-label">เวลาขึ้นงาน (พิมพ์ข้อความอิสระได้)</label>
+                <input type="text" class="form-control" name="time" placeholder="เช่น 08:00 หรือ กะดึก">
               </div>
               <div class="col-md-4">
                 <label class="form-label">จำนวนรถทั้งหมด (ใน 1 บิล)</label>
@@ -222,7 +222,7 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label">เวลาขึ้นงาน</label>
-                <input type="time" class="form-control" id="editTime">
+                <input type="text" class="form-control" id="editTime">
               </div>
               <div class="col-md-4">
                 <label class="form-label">คันที่/รวม (เช่น 1/3)</label>
@@ -297,6 +297,17 @@
           allDashboardData = data.dashboard.slice(1).reverse();
           extractAvailableYears(allDashboardData); 
         }
+
+        // --- ตั้งค่าให้เริ่มต้นกรองเดือนปัจจุบัน ---
+        const now = new Date();
+        const currentYearStr = now.getFullYear().toString();
+        const currentMonthStr = (now.getMonth() + 1).toString().padStart(2, '0');
+        
+        document.getElementById('filterMonth').value = currentMonthStr;
+        if(document.getElementById('filterYear').querySelector(`option[value="${currentYearStr}"]`)){
+          document.getElementById('filterYear').value = currentYearStr;
+        }
+
         applyFilters(); 
         processVehicles(data.vehicles);
         

@@ -20,16 +20,15 @@
     .filter-zone { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 15px; margin-bottom: 10px; }
     .filter-zone input, .filter-zone select { font-size: 0.8rem; border-color: #cbd5e1; }
     
-    /* ดีไซน์แถบปุ่มดัชนีตัวอักษรย่อ */
-    .alphabet-bar { display: flex; flex-wrap: wrap; gap: 4px; background: #fff; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; max-height: 75px; overflow-y: auto; }
-    .alpha-btn { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 7px; font-size: 0.72rem; font-weight: 500; color: #475569; transition: 0.15s; cursor: pointer; }
-    .alpha-btn:hover { background: #e2e8f0; border-color: #94a3b8; color: #0f172a; }
-    .alpha-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
-
     .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
     .table-modern { margin: 0; width: 100%; min-width: 1100px; border-collapse: collapse; }
     .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 10px 12px; font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
     .table-modern td { padding: 8px 12px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+    
+    /* CSS สำหรับหัวตารางที่กด Sort ได้ */
+    .sortable { cursor: pointer; user-select: none; transition: background-color 0.2s; }
+    .sortable:hover { background-color: #e2e8f0; color: #0f172a; }
+    .sort-icon { font-size: 0.65rem; color: #94a3b8; margin-left: 4px; display: inline-block; width: 10px; }
     
     .table-modern tbody tr:nth-child(even) { background-color: #f8fafc; }
     .table-modern tbody tr:nth-child(odd) { background-color: #ffffff; }
@@ -68,14 +67,10 @@
 <body>
 
   <div class="main-wrap">
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>🚚 Smart Booking</h2>
       <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">+ สร้างรายการ</button>
     </div>
-
-    <div class="alphabet-bar" id="alphabetBar">
-      <button class="alpha-btn active" onclick="filterByLetter('', this)">ทั้งหมด</button>
-      </div>
 
     <div class="filter-zone d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
@@ -121,15 +116,15 @@
         <thead>
           <tr>
             <th class="text-center">จัดการ</th>
-            <th>วันที่</th>
-            <th>ลูกค้า</th>
-            <th>สถานที่รับ</th>
-            <th>สถานที่ส่ง</th>
-            <th class="text-center">คันที่/รวม</th>
-            <th class="text-center">ประเภทรถ</th>
-            <th>ทะเบียนรถ</th>
-            <th>คนขับ</th>
-            <th>หมายเหตุ</th>
+            <th class="sortable" onclick="sortTable(1)">วันที่ <span class="sort-icon" id="sort-icon-1">↕</span></th>
+            <th class="sortable" onclick="sortTable(2)">ลูกค้า <span class="sort-icon" id="sort-icon-2">↕</span></th>
+            <th class="sortable" onclick="sortTable(3)">สถานที่รับ <span class="sort-icon" id="sort-icon-3">↕</span></th>
+            <th class="sortable" onclick="sortTable(4)">สถานที่ส่ง <span class="sort-icon" id="sort-icon-4">↕</span></th>
+            <th class="sortable text-center" onclick="sortTable(5)">คันที่/รวม <span class="sort-icon" id="sort-icon-5">↕</span></th>
+            <th class="sortable text-center" onclick="sortTable(6)">ประเภทรถ <span class="sort-icon" id="sort-icon-6">↕</span></th>
+            <th class="sortable" onclick="sortTable(7)">ทะเบียนรถ <span class="sort-icon" id="sort-icon-7">↕</span></th>
+            <th class="sortable" onclick="sortTable(8)">คนขับ <span class="sort-icon" id="sort-icon-8">↕</span></th>
+            <th class="sortable" onclick="sortTable(9)">หมายเหตุ <span class="sort-icon" id="sort-icon-9">↕</span></th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -281,11 +276,11 @@
     let currentPage = 1;
     let currentLimit = 30;
     
-    // ตัวแปรเก็บอักษรย่อที่กำลังเลือกค้างไว้
-    let selectedLetter = ''; 
+    // ตัวแปรสำหรับระบบเรียงข้อมูล (Sorting)
+    let currentSortCol = -1;
+    let sortAscending = true;
 
     window.onload = async function() {
-      buildAlphabetBar(); // สร้างปุ่มดัชนี ก-ฮ 0-9 A-Z
       Swal.fire({ title: 'กำลังโหลดข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
       try {
         const response = await fetch(GAS_URL + "?action=getInitialData");
@@ -313,36 +308,6 @@
       }
     };
 
-    // ฟังก์ชันสร้างปุ่มดัชนีอักษรย่อ (0-9, A-Z, ก-ฮ) ลงบนหน้าจออัตโนมัติ
-    function buildAlphabetBar() {
-      const bar = document.getElementById("alphabetBar");
-      
-      // ตัวเลข 0-9
-      for(let i=0; i<=9; i++) {
-        bar.innerHTML += `<button class="alpha-btn" onclick="filterByLetter('${i}', this)">${i}</button>`;
-      }
-      // อังกฤษ A-Z
-      for(let i=65; i<=90; i++) {
-        let char = String.fromCharCode(i);
-        bar.innerHTML += `<button class="alpha-btn" onclick="filterByLetter('${char}', this)">${char}</button>`;
-      }
-      // ไทย ก-ฮ
-      const thaiChars = ["ก","ข","ค","ฆ","ง","จ","ฉ","ช","ซ","ฌ","ญ","ฎ","ฏ","ฐ","ฑ","ฒ","ณ","ด","ต","ถ","ท","ธ","น","บ","ป","ผ","ฝ","พ","ฟ","ภ","ม","ย","ร","ล","ว","ศ","ษ","ส","ห","ฬ","อ","ฮ"];
-      thaiChars.forEach(char => {
-        bar.innerHTML += `<button class="alpha-btn" onclick="filterByLetter('${char}', this)">${char}</button>`;
-      });
-    }
-
-    // ฟังก์ชันเมื่อคลิกที่ปุ่มดัชนีตัวอักษร
-    function filterByLetter(letter, btnObj) {
-      // สลับคลาส active ของปุ่ม
-      document.querySelectorAll(".alpha-btn").forEach(btn => btn.classList.remove("active"));
-      btnObj.classList.add("active");
-      
-      selectedLetter = letter;
-      applyFilters(); // สั่งรีเฟรอร์ตารางข้อมูลใหม่ทันที
-    }
-
     function extractAvailableYears(dataList) {
       let years = new Set();
       dataList.forEach(row => {
@@ -359,7 +324,6 @@
       });
     }
 
-    // ฟังก์ชันกรองตาราง (เพิ่มเงื่อนไขตรวจอักษรย่อตัวแรกของ ลูกค้า และ สถานที่ส่ง)
     function applyFilters() {
       const search = document.getElementById('searchInput').value.toLowerCase();
       const fYear = document.getElementById('filterYear').value;
@@ -368,23 +332,8 @@
 
       filteredData = allDashboardData.filter(row => {
         const rowText = row.join(' ').toLowerCase();
-        
-        // 1. ตรวจช่องค้นหาแบบคำดิบ
         const matchSearch = search === '' || rowText.includes(search);
         
-        // 2. ตรวจปุ่มดัชนีตัวอักษรย่อตัวแรก (เช็คที่ชื่อลูกค้า [Index 2] หรือ สถานที่ส่ง [Index 4])
-        let matchLetter = true;
-        if(selectedLetter !== '') {
-          let customerStart = String(row[2] || '').trim().charAt(0).toUpperCase();
-          let dropoffStart = String(row[4] || '').trim().charAt(0).toUpperCase();
-          
-          // ตรวจสอบว่าคอลัมน์ใดคอลัมน์หนึ่งขึ้นต้นด้วยอักษรที่เลือกหรือไม่
-          if(customerStart !== selectedLetter && dropoffStart !== selectedLetter) {
-            matchLetter = false;
-          }
-        }
-
-        // 3. ตรวจสอบ วัน เดือน ปี
         let matchDate = true;
         let dateVal = String(row[1] || '');
         let dDate = new Date(dateVal);
@@ -403,12 +352,58 @@
            if (fDay && !dateVal.startsWith(fDay) && !dateVal.includes("-" + fDay) && !dateVal.includes("/" + fDay)) matchDate = false;
         }
 
-        return matchSearch && matchLetter && matchDate;
+        return matchSearch && matchDate;
       });
+
+      // ถ้ามีการกดให้ Sort ค้างไว้ ให้เรียงข้อมูลที่เพิ่งกรองเสร็จใหม่ด้วย
+      if (currentSortCol !== -1) {
+        doSortArray();
+      }
 
       currentPage = 1; 
       renderTablePage();
     }
+
+    // ================== ฟังก์ชันเรียงลำดับตาราง (Sorting) ==================
+    function sortTable(colIndex) {
+      if (currentSortCol === colIndex) {
+        sortAscending = !sortAscending; // สลับ น้อย>มาก เป็น มาก>น้อย
+      } else {
+        currentSortCol = colIndex;
+        sortAscending = true;
+      }
+      
+      doSortArray();
+      currentPage = 1;
+      renderTablePage();
+      updateSortIcons(colIndex);
+    }
+
+    function doSortArray() {
+      filteredData.sort((a, b) => {
+        let valA = a[currentSortCol] ? a[currentSortCol].toString().trim() : '';
+        let valB = b[currentSortCol] ? b[currentSortCol].toString().trim() : '';
+        
+        // ลบเครื่องหมาย ' เผื่อในกรณีเรียงคอลัมน์คันที่ (1/3)
+        if(valA.startsWith("'")) valA = valA.substring(1);
+        if(valB.startsWith("'")) valB = valB.substring(1);
+
+        // localeCompare จะฉลาดพอที่จะเรียงทั้งอักษรไทย, อังกฤษ และตัวเลขที่ปนในข้อความได้ถูกต้อง
+        return sortAscending 
+             ? valA.localeCompare(valB, 'th', {numeric: true}) 
+             : valB.localeCompare(valA, 'th', {numeric: true});
+      });
+    }
+
+    function updateSortIcons(colIndex) {
+      document.querySelectorAll('.sort-icon').forEach(icon => icon.innerHTML = '↕');
+      const activeIcon = document.getElementById('sort-icon-' + colIndex);
+      if(activeIcon) {
+        activeIcon.innerHTML = sortAscending ? '▲' : '▼';
+        activeIcon.style.color = '#4f46e5'; // เปลี่ยนสีให้รู้ว่าถูกเลือก
+      }
+    }
+    // ====================================================================
 
     function changeLimit() {
       const val = document.getElementById('limitSelect').value;
@@ -422,12 +417,6 @@
       document.getElementById('filterYear').value = '';
       document.getElementById('filterMonth').value = '';
       document.getElementById('filterDay').value = '';
-      
-      // รีเซ็ตปุ่มดัชนีกลับไปที่ "ทั้งหมด"
-      document.querySelectorAll(".alpha-btn").forEach(btn => btn.classList.remove("active"));
-      document.querySelector(".alphabet-bar button").classList.add("active");
-      selectedLetter = '';
-
       applyFilters();
     }
     
@@ -544,7 +533,6 @@
       if(matched && matched[2]) document.getElementById('editDriver').value = matched[2];
     }
 
-    // ดึงค่าใส่ดร็อปดาวน์
     function populateDropdown(elementId, items, defaultText) {
       let html = `<option value="">${defaultText}</option>`; 
       items.forEach(item => { if(item) html += `<option value="${item}">${item}</option>`; });

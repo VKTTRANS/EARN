@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ระบบจองรถ (GitHub Pages)</title>
+  <title>ระบบจองรถ</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -90,13 +90,16 @@
                 <button class="btn" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
               </div>
             </div>
+            
             <div class="mb-3">
-              <label class="form-label fw-medium text-muted">สถานที่ส่ง</label>
+              <label class="form-label fw-medium text-muted">สถานที่ส่ง (พิมพ์ค้นหาได้)</label>
               <div class="input-group">
-                <select class="form-select" id="dropoffSelect" name="dropoff" required><option value="">-- เลือกสถานที่ส่ง --</option></select>
+                <input type="text" class="form-control" list="dropoffOptions" id="dropoffInput" name="dropoff" placeholder="-- พิมพ์ค้นหาหรือเลือก --" autocomplete="off" required>
+                <datalist id="dropoffOptions"></datalist>
                 <button class="btn" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
               </div>
             </div>
+
             <div class="mb-3">
               <label class="form-label fw-medium text-muted">จำนวนรถ</label>
               <input type="number" class="form-control" name="qty" value="1" min="1" required>
@@ -123,19 +126,13 @@
   
   <script>
     // ==========================================
-    // ⚠️ สำคัญมาก: เอาลิงก์ Web App จาก Google มาวางในบรรทัดนี้
+    // เชื่อมต่อ API กับ Google Apps Script (ใส่ URL ของคุณที่นี่)
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyZ2wgme02m-aJOmdChLErNbZmBkbu90p4gAB_t11ctWS3TBXwW3iZC7Jsfn8GQzEz6/exec"; 
     // ==========================================
 
     let vehicleList = [];
 
-    // โหลดข้อมูลทั้งหมดเมื่อเปิดหน้าเว็บ (ยิงรอบเดียวจบ)
     window.onload = async function() {
-      if(!GAS_URL || GAS_URL.includes("วาง_URL")) {
-        Swal.fire('ข้อผิดพลาด', 'กรุณาตั้งค่า GAS_URL ในโค้ดก่อนใช้งาน', 'error');
-        return;
-      }
-      
       Swal.fire({ title: 'กำลังโหลดข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
       
       try {
@@ -144,9 +141,13 @@
         
         renderTable(data.dashboard);
         loadVehicles(data.vehicles);
+        
+        // โหลดข้อมูลใส่ Dropdown ธรรมดา
         populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
         populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
-        populateDropdown("dropoffSelect", data.master.dropoffs, "-- เลือกสถานที่ส่ง --");
+        
+        // โหลดข้อมูลใส่ Datalist (แบบค้นหาได้) สำหรับสถานที่ส่ง
+        populateDatalist("dropoffOptions", data.master.dropoffs);
         
         Swal.close();
       } catch (err) {
@@ -169,19 +170,31 @@
 
     function populateDropdown(elementId, items, defaultText) {
       let select = document.getElementById(elementId);
-      select.innerHTML = `<option value="">${defaultText}</option>`; 
+      let html = `<option value="">${defaultText}</option>`; 
       items.forEach(item => {
-        if(item) select.innerHTML += `<option value="${item}">${item}</option>`;
+        if(item) html += `<option value="${item}">${item}</option>`;
       });
+      select.innerHTML = html;
+    }
+
+    // ฟังก์ชันใหม่สำหรับโหลดข้อมูลเข้า Datalist (ช่องค้นหา)
+    function populateDatalist(elementId, items) {
+      let datalist = document.getElementById(elementId);
+      let html = '';
+      items.forEach(item => {
+        if(item) html += `<option value="${item}">`;
+      });
+      datalist.innerHTML = html;
     }
 
     function loadVehicles(data) {
       vehicleList = data;
       let select = document.getElementById("vehicleSelect");
-      select.innerHTML = `<option value="">-- เลือกรถ --</option>`;
+      let html = `<option value="">-- เลือกรถ --</option>`;
       data.forEach(row => {
-        if(row[0]) select.innerHTML += `<option value="${row[0]}">${row[0]} ${row[1] ? `(${row[1]})` : ''}</option>`;
+        if(row[0]) html += `<option value="${row[0]}">${row[0]} ${row[1] ? `(${row[1]})` : ''}</option>`;
       });
+      select.innerHTML = html;
     }
 
     function updateDriver() {
@@ -190,7 +203,6 @@
       document.getElementById("driverInput").value = (matchedVehicle && matchedVehicle[2]) ? matchedVehicle[2] : "";
     }
 
-    // เพิ่มข้อมูล Dropdown (ลูกค้า, รับ, ส่ง)
     async function promptAddNew(type, label) {
       Swal.fire({
         title: 'เพิ่ม' + label,
@@ -216,9 +228,11 @@
             const data = await res.json();
             
             if(data.status === 'Success') {
+              // อัปเดตข้อมูลใหม่เข้าหน้าเว็บทันที
               populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
               populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
-              populateDropdown("dropoffSelect", data.master.dropoffs, "-- เลือกสถานที่ส่ง --");
+              populateDatalist("dropoffOptions", data.master.dropoffs);
+              
               Swal.fire('สำเร็จ!', 'เพิ่มข้อมูลเรียบร้อยแล้ว', 'success');
             } else {
               throw new Error(data.error);
@@ -230,7 +244,6 @@
       });
     }
 
-    // กดปุ่มบันทึกการจองรถ
     async function submitForm() {
       let form = document.getElementById("bookingForm");
       if (!form.checkValidity()) { form.reportValidity(); return; }
@@ -243,7 +256,7 @@
         date: form.date.value,
         customer: form.customer.value,
         pickup: form.pickup.value,
-        dropoff: form.dropoff.value,
+        dropoff: form.dropoff.value, // ดึงค่าจากช่องค้นหาได้ปกติ
         qty: form.qty.value,
         vehicle: form.vehicle.value,
         driver: form.driver.value

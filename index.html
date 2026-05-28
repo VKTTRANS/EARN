@@ -20,6 +20,12 @@
     .filter-zone { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 15px; margin-bottom: 10px; }
     .filter-zone input, .filter-zone select { font-size: 0.8rem; border-color: #cbd5e1; }
     
+    /* ดีไซน์แถบปุ่มดัชนีตัวอักษรย่อ */
+    .alphabet-bar { display: flex; flex-wrap: wrap; gap: 4px; background: #fff; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; max-height: 75px; overflow-y: auto; }
+    .alpha-btn { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 7px; font-size: 0.72rem; font-weight: 500; color: #475569; transition: 0.15s; cursor: pointer; }
+    .alpha-btn:hover { background: #e2e8f0; border-color: #94a3b8; color: #0f172a; }
+    .alpha-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
+
     .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
     .table-modern { margin: 0; width: 100%; min-width: 1100px; border-collapse: collapse; }
     .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 10px 12px; font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
@@ -62,10 +68,14 @@
 <body>
 
   <div class="main-wrap">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
       <h2>🚚 Smart Booking</h2>
       <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">+ สร้างรายการ</button>
     </div>
+
+    <div class="alphabet-bar" id="alphabetBar">
+      <button class="alpha-btn active" onclick="filterByLetter('', this)">ทั้งหมด</button>
+      </div>
 
     <div class="filter-zone d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
@@ -77,18 +87,10 @@
         
         <select id="filterMonth" class="form-select form-select-sm" style="width: 120px;" onchange="applyFilters()">
           <option value="">-- เดือน --</option>
-          <option value="01">มกราคม</option>
-          <option value="02">กุมภาพันธ์</option>
-          <option value="03">มีนาคม</option>
-          <option value="04">เมษายน</option>
-          <option value="05">พฤษภาคม</option>
-          <option value="06">มิถุนายน</option>
-          <option value="07">กรกฎาคม</option>
-          <option value="08">สิงหาคม</option>
-          <option value="09">กันยายน</option>
-          <option value="10">ตุลาคม</option>
-          <option value="11">พฤศจิกายน</option>
-          <option value="12">ธันวาคม</option>
+          <option value="01">มกราคม</option><option value="02">กุมภาพันธ์</option><option value="03">มีนาคม</option>
+          <option value="04">เมษายน</option><option value="05">พฤษภาคม</option><option value="06">มิถุนายน</option>
+          <option value="07">กรกฎาคม</option><option value="08">สิงหาคม</option><option value="09">กันยายน</option>
+          <option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
         </select>
 
         <select id="filterDay" class="form-select form-select-sm" style="width: 80px;" onchange="applyFilters()">
@@ -278,8 +280,12 @@
     let filteredData = [];     
     let currentPage = 1;
     let currentLimit = 30;
+    
+    // ตัวแปรเก็บอักษรย่อที่กำลังเลือกค้างไว้
+    let selectedLetter = ''; 
 
     window.onload = async function() {
+      buildAlphabetBar(); // สร้างปุ่มดัชนี ก-ฮ 0-9 A-Z
       Swal.fire({ title: 'กำลังโหลดข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
       try {
         const response = await fetch(GAS_URL + "?action=getInitialData");
@@ -287,7 +293,7 @@
         
         if(data.dashboard.length > 1) {
           allDashboardData = data.dashboard.slice(1).reverse();
-          extractAvailableYears(allDashboardData); // ดึงปีที่มีอยู่ในระบบมาใส่ Dropdown อัตโนมัติ
+          extractAvailableYears(allDashboardData); 
         }
         applyFilters(); 
         processVehicles(data.vehicles);
@@ -307,27 +313,53 @@
       }
     };
 
-    // ฟังก์ชันดึงปีจากข้อมูลทั้งหมดที่มี เพื่อสร้างตัวเลือกใน Dropdown ปี
+    // ฟังก์ชันสร้างปุ่มดัชนีอักษรย่อ (0-9, A-Z, ก-ฮ) ลงบนหน้าจออัตโนมัติ
+    function buildAlphabetBar() {
+      const bar = document.getElementById("alphabetBar");
+      
+      // ตัวเลข 0-9
+      for(let i=0; i<=9; i++) {
+        bar.innerHTML += `<button class="alpha-btn" onclick="filterByLetter('${i}', this)">${i}</button>`;
+      }
+      // อังกฤษ A-Z
+      for(let i=65; i<=90; i++) {
+        let char = String.fromCharCode(i);
+        bar.innerHTML += `<button class="alpha-btn" onclick="filterByLetter('${char}', this)">${char}</button>`;
+      }
+      // ไทย ก-ฮ
+      const thaiChars = ["ก","ข","ค","ฆ","ง","จ","ฉ","ช","ซ","ฌ","ญ","ฎ","ฏ","ฐ","ฑ","ฒ","ณ","ด","ต","ถ","ท","ธ","น","บ","ป","ผ","ฝ","พ","ฟ","ภ","ม","ย","ร","ล","ว","ศ","ษ","ส","ห","ฬ","อ","ฮ"];
+      thaiChars.forEach(char => {
+        bar.innerHTML += `<button class="alpha-btn" onclick="filterByLetter('${char}', this)">${char}</button>`;
+      });
+    }
+
+    // ฟังก์ชันเมื่อคลิกที่ปุ่มดัชนีตัวอักษร
+    function filterByLetter(letter, btnObj) {
+      // สลับคลาส active ของปุ่ม
+      document.querySelectorAll(".alpha-btn").forEach(btn => btn.classList.remove("active"));
+      btnObj.classList.add("active");
+      
+      selectedLetter = letter;
+      applyFilters(); // สั่งรีเฟรอร์ตารางข้อมูลใหม่ทันที
+    }
+
     function extractAvailableYears(dataList) {
       let years = new Set();
       dataList.forEach(row => {
         let dateStr = row[1];
         if (dateStr) {
-          // สมมติว่ารูปแบบวันที่ในชีตเป็น YYYY-MM-DD หรือแบบอื่นที่มีปี 4 หลัก
           let match = String(dateStr).match(/\d{4}/); 
           if (match) years.add(match[0]);
         }
       });
-      
       let yearSelect = document.getElementById("filterYear");
-      let sortedYears = Array.from(years).sort().reverse(); // เรียงจากปีใหม่สุดไปเก่าสุด
-      
+      let sortedYears = Array.from(years).sort().reverse();
       sortedYears.forEach(year => {
         yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
       });
     }
 
-    // ฟังก์ชันตัวกรองแบบใหม่ (แยกเช็ค ปี เดือน วัน)
+    // ฟังก์ชันกรองตาราง (เพิ่มเงื่อนไขตรวจอักษรย่อตัวแรกของ ลูกค้า และ สถานที่ส่ง)
     function applyFilters() {
       const search = document.getElementById('searchInput').value.toLowerCase();
       const fYear = document.getElementById('filterYear').value;
@@ -336,12 +368,25 @@
 
       filteredData = allDashboardData.filter(row => {
         const rowText = row.join(' ').toLowerCase();
+        
+        // 1. ตรวจช่องค้นหาแบบคำดิบ
         const matchSearch = search === '' || rowText.includes(search);
         
+        // 2. ตรวจปุ่มดัชนีตัวอักษรย่อตัวแรก (เช็คที่ชื่อลูกค้า [Index 2] หรือ สถานที่ส่ง [Index 4])
+        let matchLetter = true;
+        if(selectedLetter !== '') {
+          let customerStart = String(row[2] || '').trim().charAt(0).toUpperCase();
+          let dropoffStart = String(row[4] || '').trim().charAt(0).toUpperCase();
+          
+          // ตรวจสอบว่าคอลัมน์ใดคอลัมน์หนึ่งขึ้นต้นด้วยอักษรที่เลือกหรือไม่
+          if(customerStart !== selectedLetter && dropoffStart !== selectedLetter) {
+            matchLetter = false;
+          }
+        }
+
+        // 3. ตรวจสอบ วัน เดือน ปี
         let matchDate = true;
-        let dateVal = String(row[1] || ''); // คอลัมน์วันที่
-        
-        // แปลงวันที่ให้อยู่ในรูปแบบที่แน่นอน (เพื่อการค้นหาที่แม่นยำ)
+        let dateVal = String(row[1] || '');
         let dDate = new Date(dateVal);
         
         if (dateVal && !isNaN(dDate.getTime())) {
@@ -353,13 +398,12 @@
           if (fMonth && rowMonth !== fMonth) matchDate = false;
           if (fDay && rowDay !== fDay) matchDate = false;
         } else {
-           // กรณีรูปแบบวันที่อ่านเป็น Date ไม่ได้ ให้ค้นหาแบบข้อความดิบ
            if (fYear && !dateVal.includes(fYear)) matchDate = false;
            if (fMonth && !dateVal.includes("-" + fMonth + "-") && !dateVal.includes("/" + fMonth + "/")) matchDate = false;
            if (fDay && !dateVal.startsWith(fDay) && !dateVal.includes("-" + fDay) && !dateVal.includes("/" + fDay)) matchDate = false;
         }
 
-        return matchSearch && matchDate;
+        return matchSearch && matchLetter && matchDate;
       });
 
       currentPage = 1; 
@@ -378,6 +422,12 @@
       document.getElementById('filterYear').value = '';
       document.getElementById('filterMonth').value = '';
       document.getElementById('filterDay').value = '';
+      
+      // รีเซ็ตปุ่มดัชนีกลับไปที่ "ทั้งหมด"
+      document.querySelectorAll(".alpha-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelector(".alphabet-bar button").classList.add("active");
+      selectedLetter = '';
+
       applyFilters();
     }
     
@@ -412,11 +462,8 @@
       let html = '';
       for (let i = startIndex; i < endIndex; i++) {
         let row = filteredData[i];
-        
         let displayQty = row[5] || '1/1';
-        if(displayQty.toString().startsWith("'")) {
-            displayQty = displayQty.substring(1);
-        }
+        if(displayQty.toString().startsWith("'")) displayQty = displayQty.substring(1);
 
         let typeText = row[6] || '-';
         let badgeClass = getBadgeClass(typeText);
@@ -497,6 +544,7 @@
       if(matched && matched[2]) document.getElementById('editDriver').value = matched[2];
     }
 
+    // ดึงค่าใส่ดร็อปดาวน์
     function populateDropdown(elementId, items, defaultText) {
       let html = `<option value="">${defaultText}</option>`; 
       items.forEach(item => { if(item) html += `<option value="${item}">${item}</option>`; });
@@ -526,7 +574,6 @@
       document.getElementById('editRowId').value = row[10]; 
       document.getElementById('displayEditJobNo').innerText = row[0]; 
       document.getElementById('editJobNo').value = row[0];            
-      
       document.getElementById('editDate').value = formatToInputDate(row[1]);
       document.getElementById('editCustomer').value = row[2];
       document.getElementById('editPickup').value = row[3];
@@ -569,17 +616,11 @@
         const res = await fetch(GAS_URL, {
           method: 'POST', redirect: "follow",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ 
-            action: 'editBooking', 
-            rowId: document.getElementById('editRowId').value, 
-            data: formData 
-          })
+          body: JSON.stringify({ action: 'editBooking', rowId: document.getElementById('editRowId').value, data: formData })
         });
         const result = await res.json();
-        
         if (result.status === 'Success') {
-          Swal.fire({ title: 'สำเร็จ!', text: 'อัปเดตข้อมูลเรียบร้อย', icon: 'success', confirmButtonText: 'ตกลง' })
-          .then(() => location.reload());
+          Swal.fire({ title: 'สำเร็จ!', text: 'อัปเดตข้อมูลเรียบร้อย', icon: 'success', confirmButtonText: 'ตกลง' }).then(() => location.reload());
         }
       } catch (err) {
         Swal.fire('ผิดพลาด', 'อัปเดตไม่สำเร็จ: ' + err.message, 'error');
@@ -609,12 +650,9 @@
           });
           const data = await res.json();
           if (data.status === 'Success') {
-            Swal.fire({ title: 'ลบสำเร็จ!', icon: 'success', confirmButtonText: 'ตกลง' })
-            .then(() => location.reload());
+            Swal.fire({ title: 'ลบสำเร็จ!', icon: 'success', confirmButtonText: 'ตกลง' }).then(() => location.reload());
           }
-        } catch (err) {
-          Swal.fire('ผิดพลาด', 'ลบไม่สำเร็จ: ' + err.message, 'error');
-        }
+        } catch (err) { Swal.fire('ผิดพลาด', 'ลบไม่สำเร็จ: ' + err.message, 'error'); }
       }
     }
 
@@ -651,10 +689,8 @@
           body: JSON.stringify({ action: 'saveBooking', data: formData })
         });
         const result = await res.json();
-        
         if (result.status === 'Success') {
-          Swal.fire({ title: 'สำเร็จ!', text: 'บันทึกข้อมูลเรียบร้อย', icon: 'success', confirmButtonText: 'ตกลง' })
-          .then(() => location.reload());
+          Swal.fire({ title: 'สำเร็จ!', text: 'บันทึกข้อมูลเรียบร้อย', icon: 'success', confirmButtonText: 'ตกลง' }).then(() => location.reload());
         }
       } catch (err) {
         Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ: ' + err.message, 'error');

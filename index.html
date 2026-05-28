@@ -1,99 +1,210 @@
-const SHEET_ID = '1buRNE57-rBDaFXcBrO0suQklQv54EaYHjjAsm7MLZds';
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @media (max-width: 768px) {
+      .table-responsive { font-size: 12px; }
+      .btn-main { width: 100%; margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body class="p-4 bg-light">
+  <div class="container-fluid bg-white p-4 rounded shadow-sm">
+    <h2 class="mb-4">🚗 ระบบ Booking รถ</h2>
+    
+    <div class="mb-3">
+      <button type="button" class="btn btn-primary btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">
+        + เพิ่มรายการจอง
+      </button>
+    </div>
 
-function doGet() {
-  return HtmlService.createTemplateFromFile('index')
-      .evaluate()
-      .setTitle('ระบบจองรถ')
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-}
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>เลขงาน</th>
+            <th>วันที่</th>
+            <th>ลูกค้า</th>
+            <th>สถานที่รับ</th>
+            <th>สถานที่ส่ง</th>
+            <th>จำนวนรถ</th>
+            <th>ทะเบียนรถ</th>
+            <th>คนขับ</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-function getDashboardData() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName('Bookings');
-  return sheet.getDataRange().getDisplayValues();
-}
+  <div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">เพิ่มรายการ Booking</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bookingForm">
+            <div class="mb-3">
+              <label class="form-label">วันที่เริ่มงาน</label>
+              <input type="date" class="form-control" name="date" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">ลูกค้า</label>
+              <div class="input-group">
+                <select class="form-select" id="customerSelect" name="customer" required>
+                  <option value="">-- เลือกลูกค้า --</option>
+                </select>
+                <button class="btn btn-outline-secondary" type="button" onclick="promptAddNew('customer', 'ชื่อลูกค้าใหม่')">+</button>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">สถานที่รับ</label>
+              <div class="input-group">
+                <select class="form-select" id="pickupSelect" name="pickup" required>
+                  <option value="">-- เลือกสถานที่รับ --</option>
+                </select>
+                <button class="btn btn-outline-secondary" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">สถานที่ส่ง</label>
+              <div class="input-group">
+                <select class="form-select" id="dropoffSelect" name="dropoff" required>
+                  <option value="">-- เลือกสถานที่ส่ง --</option>
+                </select>
+                <button class="btn btn-outline-secondary" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
+              </div>
+            </div>
 
-function getVehicleData() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName('Vehicles');
-  if (!sheet) return [];
-  const data = sheet.getDataRange().getDisplayValues();
-  if (data.length > 0) data.shift();
-  return data;
-}
+            <div class="mb-3">
+              <label class="form-label">จำนวนรถ</label>
+              <input type="number" class="form-control" name="qty" value="1" min="1" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">ทะเบียนรถ</label>
+              <select class="form-select" id="vehicleSelect" name="vehicle" onchange="updateDriver()">
+                <option value="">-- เลือกรถ --</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">คนขับ (แก้ไขได้)</label>
+              <input type="text" class="form-control" id="driverInput" name="driver">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+          <button type="button" class="btn btn-success" onclick="submitForm()" id="saveBtn">บันทึกข้อมูล</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-function getMasterData() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName('Customers');
-  if (!sheet) return { customers: [], pickups: [], dropoffs: [] };
-  
-  const values = sheet.getDataRange().getDisplayValues();
-  let customers = [];
-  let pickups = [];
-  let dropoffs = [];
-  
-  for (let i = 1; i < values.length; i++) {
-    if (values[i][0]) customers.push(values[i][0]);
-    if (values[i][1]) pickups.push(values[i][1]);
-    if (values[i][2]) dropoffs.push(values[i][2]);
-  }
-  
-  return { customers, pickups, dropoffs };
-}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let vehicleList = [];
 
-function addMasterItem(type, newValue) {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName('Customers');
-  let colIndex = 1; 
-  
-  if (type === 'pickup') colIndex = 2;
-  if (type === 'dropoff') colIndex = 3;
-  
-  const lastRow = sheet.getLastRow();
-  let nextRow = 2;
-  if (lastRow > 0) {
-    let colValues = sheet.getRange(1, colIndex, lastRow, 1).getValues().flat();
-    nextRow = colValues.filter(String).length + 1;
-  }
-  
-  sheet.getRange(nextRow, colIndex).setValue(newValue);
-  return "Success";
-}
+    window.onload = function() {
+      google.script.run.withSuccessHandler(renderTable).getDashboardData();
+      google.script.run.withSuccessHandler(loadVehicles).getVehicleData();
+      loadAllMasterData();
+    };
 
-function generateJobNo() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName('Bookings');
-  const lastRow = Math.max(sheet.getLastRow(), 1);
-  const dateStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyMM");
-  
-  if (lastRow === 1) return "JOB-" + dateStr + "-001";
-  
-  const lastJobStr = sheet.getRange(lastRow, 1).getValue();
-  if (!lastJobStr || !lastJobStr.includes("-")) return "JOB-" + dateStr + "-001";
-  
-  const parts = lastJobStr.split("-");
-  const lastNumber = parseInt(parts[2]);
-  
-  if (isNaN(lastNumber)) return "JOB-" + dateStr + "-001";
-  
-  const newNumber = ("000" + (lastNumber + 1)).slice(-3);
-  return "JOB-" + dateStr + "-" + newNumber;
-}
+    function renderTable(data) {
+      let tbody = document.getElementById("tableBody");
+      let html = "";
+      for (let i = 1; i < data.length; i++) {
+        html += `<tr>
+          <td>${data[i][0] || ''}</td>
+          <td>${data[i][1] || ''}</td>
+          <td>${data[i][2] || ''}</td>
+          <td>${data[i][3] || ''}</td>
+          <td>${data[i][4] || ''}</td>
+          <td>${data[i][5] || ''}</td>
+          <td>${data[i][6] || ''}</td>
+          <td>${data[i][7] || ''}</td>
+        </tr>`;
+      }
+      tbody.innerHTML = html;
+    }
 
-function saveBooking(formData) {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName('Bookings');
-  const jobNo = generateJobNo();
-  
-  sheet.appendRow([
-    jobNo,
-    formData.date,
-    formData.customer,
-    formData.pickup,
-    formData.dropoff,
-    formData.qty,
-    formData.vehicle,
-    formData.driver
-  ]);
-  return "Success";
-}
+    function loadAllMasterData() {
+      google.script.run.withSuccessHandler(function(data) {
+        populateDropdown("customerSelect", data.customers);
+        populateDropdown("pickupSelect", data.pickups);
+        populateDropdown("dropoffSelect", data.dropoffs);
+      }).getMasterData();
+    }
+
+    function populateDropdown(elementId, items) {
+      let select = document.getElementById(elementId);
+      select.innerHTML = select.options[0].outerHTML; 
+      items.forEach(item => {
+        let option = document.createElement("option");
+        option.value = item;
+        option.text = item;
+        select.appendChild(option);
+      });
+    }
+
+    function promptAddNew(type, label) {
+      let newValue = prompt("กรุณากรอก " + label + ":");
+      if (newValue && newValue.trim() !== "") {
+        google.script.run.withSuccessHandler(function() {
+          alert("เพิ่มข้อมูลสำเร็จ!");
+          loadAllMasterData();
+        }).addMasterItem(type, newValue.trim());
+      }
+    }
+
+    function loadVehicles(data) {
+      vehicleList = data;
+      let select = document.getElementById("vehicleSelect");
+      data.forEach(row => {
+        if(row[0]) {
+          let option = document.createElement("option");
+          option.value = row[0];
+          option.text = row[0] + (row[1] ? " (" + row[1] + ")" : "");
+          select.appendChild(option);
+        }
+      });
+    }
+
+    function updateDriver() {
+      let selectedVehicle = document.getElementById("vehicleSelect").value;
+      let driverInput = document.getElementById("driverInput");
+      let matchedVehicle = vehicleList.find(v => v[0] === selectedVehicle);
+      if (matchedVehicle && matchedVehicle[2]) {
+        driverInput.value = matchedVehicle[2];
+      } else {
+        driverInput.value = "";
+      }
+    }
+
+    function submitForm() {
+      let form = document.getElementById("bookingForm");
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      
+      document.getElementById("saveBtn").disabled = true;
+      document.getElementById("saveBtn").innerText = "กำลังบันทึก...";
+      
+      google.script.run.withSuccessHandler(function() {
+        alert("บันทึกข้อมูลสำเร็จ!");
+        location.reload();
+      }).saveBooking(form);
+    }
+  </script>
+</body>
+</html>

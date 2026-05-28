@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <base target="_top">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ระบบจองรถ (GitHub Pages)</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,124 +19,25 @@
       --border-color: #e2e8f0;
       --radius: 16px;
     }
-
-    body {
-      font-family: 'Prompt', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      padding: 20px 0;
-    }
-
-    .main-container {
-      width: 95%;
-      margin: 0 auto;
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-      padding: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-    }
-
-    h2 {
-      font-weight: 600;
-      color: var(--text-main);
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn-custom {
-      border-radius: 10px;
-      padding: 10px 20px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .btn-primary-custom {
-      background-color: var(--primary-color);
-      border: none;
-      color: white;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-    }
-
-    .btn-primary-custom:hover {
-      background-color: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-
-    .table-custom th {
-      background-color: #f1f5f9;
-      color: #475569;
-      font-weight: 500;
-      border-bottom: 2px solid var(--border-color);
-      padding: 15px;
-      white-space: nowrap;
-    }
-
-    .table-custom td {
-      padding: 15px;
-      vertical-align: middle;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .form-control, .form-select {
-      border-radius: 10px;
-      padding: 12px 15px;
-      border: 1px solid var(--border-color);
-      background-color: #f8fafc;
-      transition: all 0.2s;
-    }
-
-    .form-control:focus, .form-select:focus {
-      background-color: #fff;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .input-group .btn {
-      border-radius: 0 10px 10px 0;
-      padding: 0 20px;
-      border: 1px solid var(--border-color);
-      background: white;
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    .modal-content {
-      border-radius: var(--radius);
-      border: none;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
-
-    .modal-header {
-      border-bottom: 1px solid var(--border-color);
-      padding: 20px 24px;
-    }
-
-    .modal-body {
-      padding: 24px;
-    }
-
-    .modal-footer {
-      border-top: 1px solid var(--border-color);
-      padding: 20px 24px;
-    }
-
+    body { font-family: 'Prompt', sans-serif; background-color: var(--bg-color); color: var(--text-main); padding: 20px 0; }
+    .main-container { width: 95%; margin: 0 auto; background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); padding: 30px; border: 1px solid rgba(255, 255, 255, 0.8); }
+    h2 { font-weight: 600; color: var(--text-main); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .btn-custom { border-radius: 10px; padding: 10px 20px; font-weight: 500; transition: all 0.2s; }
+    .btn-primary-custom { background-color: var(--primary-color); border: none; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+    .btn-primary-custom:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+    .table-custom th { background-color: #f1f5f9; color: #475569; font-weight: 500; border-bottom: 2px solid var(--border-color); padding: 15px; white-space: nowrap; }
+    .table-custom td { padding: 15px; vertical-align: middle; border-bottom: 1px solid var(--border-color); }
+    .form-control, .form-select { border-radius: 10px; padding: 12px 15px; border: 1px solid var(--border-color); background-color: #f8fafc; transition: all 0.2s; }
+    .form-control:focus, .form-select:focus { background-color: #fff; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .input-group .btn { border-radius: 0 10px 10px 0; padding: 0 20px; border: 1px solid var(--border-color); background: white; color: var(--text-main); font-weight: 600; }
+    .modal-content { border-radius: var(--radius); border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+    .modal-header { border-bottom: 1px solid var(--border-color); padding: 20px 24px; }
+    .modal-body { padding: 24px; }
+    .modal-footer { border-top: 1px solid var(--border-color); padding: 20px 24px; }
     @media (max-width: 768px) {
-      .main-container {
-        width: 100%;
-        padding: 15px;
-        border-radius: 0;
-        box-shadow: none;
-      }
-      .btn-custom {
-        width: 100%;
-        margin-bottom: 15px;
-      }
-      .table-custom {
-        font-size: 13px;
-      }
+      .main-container { width: 100%; padding: 15px; border-radius: 0; box-shadow: none; }
+      .btn-custom { width: 100%; margin-bottom: 15px; }
+      .table-custom { font-size: 13px; }
       body { padding: 0; }
     }
   </style>
@@ -145,29 +46,19 @@
 
   <div class="main-container">
     <h2>🚚 ระบบ Booking รถ</h2>
-    
     <div>
       <button type="button" class="btn-custom btn-primary-custom" data-bs-toggle="modal" data-bs-target="#bookingModal">
         + เพิ่มรายการจอง
       </button>
     </div>
-
     <div class="table-responsive mt-3">
       <table class="table table-hover table-custom">
         <thead>
           <tr>
-            <th>เลขงาน</th>
-            <th>วันที่</th>
-            <th>ลูกค้า</th>
-            <th>สถานที่รับ</th>
-            <th>สถานที่ส่ง</th>
-            <th>จำนวนรถ</th>
-            <th>ทะเบียนรถ</th>
-            <th>คนขับ</th>
+            <th>เลขงาน</th><th>วันที่</th><th>ลูกค้า</th><th>สถานที่รับ</th><th>สถานที่ส่ง</th><th>จำนวนรถ</th><th>ทะเบียนรถ</th><th>คนขับ</th>
           </tr>
         </thead>
-        <tbody id="tableBody">
-        </tbody>
+        <tbody id="tableBody"></tbody>
       </table>
     </div>
   </div>
@@ -185,47 +76,34 @@
               <label class="form-label fw-medium text-muted">วันที่เริ่มงาน</label>
               <input type="date" class="form-control" name="date" required>
             </div>
-            
             <div class="mb-3">
               <label class="form-label fw-medium text-muted">ลูกค้า</label>
               <div class="input-group">
-                <select class="form-select" id="customerSelect" name="customer" required>
-                  <option value="">-- เลือกลูกค้า --</option>
-                </select>
+                <select class="form-select" id="customerSelect" name="customer" required><option value="">-- เลือกลูกค้า --</option></select>
                 <button class="btn" type="button" onclick="promptAddNew('customer', 'ชื่อลูกค้าใหม่')">+</button>
               </div>
             </div>
-            
             <div class="mb-3">
               <label class="form-label fw-medium text-muted">สถานที่รับ</label>
               <div class="input-group">
-                <select class="form-select" id="pickupSelect" name="pickup" required>
-                  <option value="">-- เลือกสถานที่รับ --</option>
-                </select>
+                <select class="form-select" id="pickupSelect" name="pickup" required><option value="">-- เลือกสถานที่รับ --</option></select>
                 <button class="btn" type="button" onclick="promptAddNew('pickup', 'สถานที่รับใหม่')">+</button>
               </div>
             </div>
-            
             <div class="mb-3">
               <label class="form-label fw-medium text-muted">สถานที่ส่ง</label>
               <div class="input-group">
-                <select class="form-select" id="dropoffSelect" name="dropoff" required>
-                  <option value="">-- เลือกสถานที่ส่ง --</option>
-                </select>
+                <select class="form-select" id="dropoffSelect" name="dropoff" required><option value="">-- เลือกสถานที่ส่ง --</option></select>
                 <button class="btn" type="button" onclick="promptAddNew('dropoff', 'สถานที่ส่งใหม่')">+</button>
               </div>
             </div>
-
             <div class="mb-3">
               <label class="form-label fw-medium text-muted">จำนวนรถ</label>
               <input type="number" class="form-control" name="qty" value="1" min="1" required>
             </div>
-            
             <div class="mb-3">
               <label class="form-label fw-medium text-muted">ทะเบียนรถ</label>
-              <select class="form-select" id="vehicleSelect" name="vehicle" onchange="updateDriver()">
-                <option value="">-- เลือกรถ --</option>
-              </select>
+              <select class="form-select" id="vehicleSelect" name="vehicle" onchange="updateDriver()"><option value="">-- เลือกรถ --</option></select>
             </div>
             <div class="mb-3">
               <label class="form-label fw-medium text-muted">คนขับ (แก้ไขได้)</label>
@@ -244,64 +122,76 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
+    // ==========================================
+    // ⚠️ สำคัญมาก: เอาลิงก์ Web App จาก Google มาวางในบรรทัดนี้
+    const GAS_URL = "วาง_URL_ที่ได้จาก_Google_ตรงนี้"; 
+    // ==========================================
+
     let vehicleList = [];
 
-    window.onload = function() {
-      google.script.run.withFailureHandler(showError).withSuccessHandler(renderTable).getDashboardData();
-      google.script.run.withFailureHandler(showError).withSuccessHandler(loadVehicles).getVehicleData();
-      loadAllMasterData();
+    // โหลดข้อมูลทั้งหมดเมื่อเปิดหน้าเว็บ (ยิงรอบเดียวจบ)
+    window.onload = async function() {
+      if(!GAS_URL || GAS_URL.includes("วาง_URL")) {
+        Swal.fire('ข้อผิดพลาด', 'กรุณาตั้งค่า GAS_URL ในโค้ดก่อนใช้งาน', 'error');
+        return;
+      }
+      
+      Swal.fire({ title: 'กำลังโหลดข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+      
+      try {
+        const response = await fetch(GAS_URL + "?action=getInitialData");
+        const data = await response.json();
+        
+        renderTable(data.dashboard);
+        loadVehicles(data.vehicles);
+        populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
+        populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
+        populateDropdown("dropoffSelect", data.master.dropoffs, "-- เลือกสถานที่ส่ง --");
+        
+        Swal.close();
+      } catch (err) {
+        Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ' + err.message, 'error');
+      }
     };
-
-    function showError(err) {
-      Swal.fire('ข้อผิดพลาด', err.message, 'error');
-    }
 
     function renderTable(data) {
       let tbody = document.getElementById("tableBody");
       let html = "";
       for (let i = 1; i < data.length; i++) {
         html += `<tr>
-          <td class="fw-medium">${data[i][0] || ''}</td>
-          <td>${data[i][1] || ''}</td>
-          <td>${data[i][2] || ''}</td>
-          <td>${data[i][3] || ''}</td>
-          <td>${data[i][4] || ''}</td>
-          <td>${data[i][5] || ''}</td>
-          <td>${data[i][6] || ''}</td>
-          <td>${data[i][7] || ''}</td>
+          <td class="fw-medium">${data[i][0] || ''}</td><td>${data[i][1] || ''}</td>
+          <td>${data[i][2] || ''}</td><td>${data[i][3] || ''}</td><td>${data[i][4] || ''}</td>
+          <td>${data[i][5] || ''}</td><td>${data[i][6] || ''}</td><td>${data[i][7] || ''}</td>
         </tr>`;
       }
       tbody.innerHTML = html;
     }
 
-    function loadAllMasterData() {
-      google.script.run.withFailureHandler(showError).withSuccessHandler(function(data) {
-        populateDropdown("customerSelect", data.customers, "-- เลือกลูกค้า --");
-        populateDropdown("pickupSelect", data.pickups, "-- เลือกสถานที่รับ --");
-        populateDropdown("dropoffSelect", data.dropoffs, "-- เลือกสถานที่ส่ง --");
-      }).getMasterData();
-    }
-
     function populateDropdown(elementId, items, defaultText) {
       let select = document.getElementById(elementId);
-      select.innerHTML = ''; 
-      
-      let defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.text = defaultText;
-      select.appendChild(defaultOption);
-      
+      select.innerHTML = `<option value="">${defaultText}</option>`; 
       items.forEach(item => {
-        if(item) {
-          let option = document.createElement("option");
-          option.value = item;
-          option.text = item;
-          select.appendChild(option);
-        }
+        if(item) select.innerHTML += `<option value="${item}">${item}</option>`;
       });
     }
 
-    function promptAddNew(type, label) {
+    function loadVehicles(data) {
+      vehicleList = data;
+      let select = document.getElementById("vehicleSelect");
+      select.innerHTML = `<option value="">-- เลือกรถ --</option>`;
+      data.forEach(row => {
+        if(row[0]) select.innerHTML += `<option value="${row[0]}">${row[0]} ${row[1] ? `(${row[1]})` : ''}</option>`;
+      });
+    }
+
+    function updateDriver() {
+      let selectedVehicle = document.getElementById("vehicleSelect").value;
+      let matchedVehicle = vehicleList.find(v => v[0] === selectedVehicle);
+      document.getElementById("driverInput").value = (matchedVehicle && matchedVehicle[2]) ? matchedVehicle[2] : "";
+    }
+
+    // เพิ่มข้อมูล Dropdown (ลูกค้า, รับ, ส่ง)
+    async function promptAddNew(type, label) {
       Swal.fire({
         title: 'เพิ่ม' + label,
         input: 'text',
@@ -309,86 +199,77 @@
         showCancelButton: true,
         confirmButtonText: 'บันทึก',
         cancelButtonText: 'ยกเลิก',
-        customClass: {
-          confirmButton: 'btn-custom btn-primary-custom mx-2',
-          cancelButton: 'btn-custom btn-light mx-2'
-        },
+        customClass: { confirmButton: 'btn-custom btn-primary-custom mx-2', cancelButton: 'btn-custom btn-light mx-2' },
         buttonsStyling: false,
-        inputValidator: (value) => {
-          if (!value) return 'กรุณากรอกข้อมูล!'
-        }
-      }).then((result) => {
+        inputValidator: (value) => { if (!value) return 'กรุณากรอกข้อมูล!' }
+      }).then(async (result) => {
         if (result.isConfirmed) {
-          let newValue = result.value.trim();
           Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
           
-          google.script.run.withFailureHandler(showError).withSuccessHandler(function() {
-            Swal.fire('สำเร็จ!', 'เพิ่มข้อมูลเรียบร้อยแล้ว', 'success');
-            loadAllMasterData(); 
-          }).addMasterItem(type, newValue);
+          try {
+            const res = await fetch(GAS_URL, {
+              method: 'POST',
+              redirect: "follow",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify({ action: 'addMasterItem', type: type, newValue: result.value.trim() })
+            });
+            const data = await res.json();
+            
+            if(data.status === 'Success') {
+              populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
+              populateDropdown("pickupSelect", data.master.pickups, "-- เลือกสถานที่รับ --");
+              populateDropdown("dropoffSelect", data.master.dropoffs, "-- เลือกสถานที่ส่ง --");
+              Swal.fire('สำเร็จ!', 'เพิ่มข้อมูลเรียบร้อยแล้ว', 'success');
+            } else {
+              throw new Error(data.error);
+            }
+          } catch(err) {
+            Swal.fire('ผิดพลาด', err.message, 'error');
+          }
         }
       });
     }
 
-    function loadVehicles(data) {
-      vehicleList = data;
-      let select = document.getElementById("vehicleSelect");
-      select.innerHTML = '';
-      
-      let defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.text = "-- เลือกรถ --";
-      select.appendChild(defaultOption);
-
-      data.forEach(row => {
-        if(row[0] && row[0].toString().trim() !== "") {
-          let option = document.createElement("option");
-          option.value = row[0];
-          option.text = row[0] + (row[1] ? " (" + row[1] + ")" : "");
-          select.appendChild(option);
-        }
-      });
-    }
-
-    function updateDriver() {
-      let selectedVehicle = document.getElementById("vehicleSelect").value;
-      let driverInput = document.getElementById("driverInput");
-      let matchedVehicle = vehicleList.find(v => v[0] === selectedVehicle);
-      if (matchedVehicle && matchedVehicle[2]) {
-        driverInput.value = matchedVehicle[2];
-      } else {
-        driverInput.value = "";
-      }
-    }
-
-    function submitForm() {
+    // กดปุ่มบันทึกการจองรถ
+    async function submitForm() {
       let form = document.getElementById("bookingForm");
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
+      if (!form.checkValidity()) { form.reportValidity(); return; }
       
-      document.getElementById("saveBtn").disabled = true;
-      document.getElementById("saveBtn").innerText = "กำลังบันทึก...";
-      
+      let btn = document.getElementById("saveBtn");
+      btn.disabled = true; btn.innerText = "กำลังบันทึก...";
       Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
       
-      google.script.run.withFailureHandler(function(err) {
-        showError(err);
-        document.getElementById("saveBtn").disabled = false;
-        document.getElementById("saveBtn").innerText = "บันทึกข้อมูล";
-      }).withSuccessHandler(function() {
-        Swal.fire({
-          title: 'สำเร็จ!',
-          text: 'บันทึกข้อมูล Booking เรียบร้อยแล้ว',
-          icon: 'success',
-          confirmButtonText: 'ตกลง',
-          customClass: { confirmButton: 'btn-custom btn-primary-custom' },
-          buttonsStyling: false
-        }).then(() => {
-          location.reload();
+      const formData = {
+        date: form.date.value,
+        customer: form.customer.value,
+        pickup: form.pickup.value,
+        dropoff: form.dropoff.value,
+        qty: form.qty.value,
+        vehicle: form.vehicle.value,
+        driver: form.driver.value
+      };
+
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: 'saveBooking', data: formData })
         });
-      }).saveBooking(form);
+        const result = await res.json();
+        
+        if (result.status === 'Success') {
+          Swal.fire({
+            title: 'สำเร็จ!', text: 'บันทึกข้อมูล Booking เรียบร้อยแล้ว', icon: 'success',
+            customClass: { confirmButton: 'btn-custom btn-primary-custom' }, buttonsStyling: false
+          }).then(() => location.reload());
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (err) {
+        Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ: ' + err.message, 'error');
+        btn.disabled = false; btn.innerText = "บันทึกข้อมูล";
+      }
     }
   </script>
 </body>

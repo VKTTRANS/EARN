@@ -69,7 +69,9 @@
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
       <h2>🚚 Smart Booking</h2>
       <div>
-        <button type="button" class="btn btn-success btn-sm me-2" onclick="triggerLineManual()">ส่งสรุปงานเข้า LINE</button>
+        <button type="button" class="btn btn-success btn-sm me-2" onclick="triggerLineManual()">
+          <i class="fas fa-paper-plane"></i> ส่งสรุปงานเข้า LINE
+        </button>
         <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">+ สร้างรายการ</button>
       </div>
     </div>
@@ -298,7 +300,6 @@
           extractAvailableYears(allDashboardData); 
         }
 
-        // --- ตั้งค่าให้เริ่มต้นกรองเดือนปัจจุบัน ---
         const now = new Date();
         const currentYearStr = now.getFullYear().toString();
         const currentMonthStr = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -704,23 +705,51 @@
       }
     }
 
+    // --- ฟังก์ชันกดส่ง LINE (อัปเกรดหน้าตาใหม่) ---
     async function triggerLineManual() {
-      if(!confirm('ยืนยันส่งสรุปคิวรถของวันพรุ่งนี้ เข้าสู่ระบบ LINE?')) return;
-      
-      Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+      Swal.fire({ title: 'กำลังตรวจสอบโควต้า...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
       
       try {
-        const res = await fetch(GAS_URL, {
+        // แอบเช็คโควต้าก่อน
+        const resCheck = await fetch(GAS_URL, {
           method: 'POST', redirect: "follow",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: 'sendLineManual' })
+          body: JSON.stringify({ action: 'checkLineQuota' })
         });
-        const data = await res.json();
+        const dataCheck = await resCheck.json();
         
-        if (data.status === 'Success') {
-          Swal.fire('สำเร็จ!', data.message, 'success');
-        } else {
-          Swal.fire('แจ้งเตือน', data.error, 'warning');
+        if (dataCheck.remaining <= 0) {
+          Swal.fire('โควต้าหมดแล้ว', 'วันนี้คุณกดส่งแจ้งเตือนครบ 6 ครั้งแล้วครับ ❌\n(กรุณารอวันพรุ่งนี้ระบบจะรีเซ็ตใหม่)', 'warning');
+          return;
+        }
+
+        // เด้งถามยืนยันแบบสวยๆ
+        const result = await Swal.fire({
+          title: 'ยืนยันส่งข้อมูลเข้า LINE?',
+          html: `ระบบจะรวบรวมคิวงานของวันพรุ่งนี้ ส่งเข้าแชท LINE ทันที<br><br><span class="badge bg-info text-dark" style="font-size:14px; padding:8px 12px;">โควต้าการกดวันนี้: เหลือ ${dataCheck.remaining} ครั้ง</span>`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#10b981',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: '<i class="fas fa-paper-plane"></i> ใช่, ส่งเลย!',
+          cancelButtonText: 'ยกเลิก'
+        });
+
+        if (result.isConfirmed) {
+          Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+          
+          const res = await fetch(GAS_URL, {
+            method: 'POST', redirect: "follow",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: 'sendLineManual' })
+          });
+          const data = await res.json();
+          
+          if (data.status === 'Success') {
+            Swal.fire('สำเร็จ!', data.message, 'success');
+          } else {
+            Swal.fire('แจ้งเตือน', data.error, 'warning');
+          }
         }
       } catch (err) {
         Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้: ' + err.message, 'error');

@@ -22,6 +22,7 @@
     .table-modern { margin: 0; width: 100%; min-width: 1100px; border-collapse: collapse; }
     .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 12px 15px; font-size: 0.8rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
     .table-modern td { padding: 10px 15px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    
     .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
     .form-control, .form-select { border-radius: 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; }
     .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
@@ -54,7 +55,7 @@
 
     <div class="filter-zone d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
-        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 ค้นหา (เลขงาน, ลูกค้า...)" style="width: 220px;" onkeyup="applyFilters()">
+        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 ค้นหา (ลูกค้า, ทะเบียน...)" style="width: 220px;" onkeyup="applyFilters()">
         <div class="input-group input-group-sm" style="width: 170px;">
           <span class="input-group-text bg-white text-muted border-end-0">ด/ป</span>
           <input type="month" id="monthFilter" class="form-control border-start-0" onchange="document.getElementById('dateFilter').value=''; applyFilters()">
@@ -80,8 +81,16 @@
       <table class="table-modern table-hover">
         <thead>
           <tr>
-            <th>จัดการ</th>
-            <th>เลขงาน</th><th>วันที่</th><th>ลูกค้า</th><th>สถานที่รับ</th><th>สถานที่ส่ง</th><th>รถ/ประเภท</th><th>ทะเบียน</th><th>คนขับ</th><th>หมายเหตุ</th>
+            <th class="text-center">จัดการ</th>
+            <th>วันที่</th>
+            <th>ลูกค้า</th>
+            <th>สถานที่รับ</th>
+            <th>สถานที่ส่ง</th>
+            <th class="text-center">รวม (คัน)</th>
+            <th class="text-center">ประเภทรถ</th>
+            <th>ทะเบียนรถ</th>
+            <th>คนขับ</th>
+            <th>หมายเหตุ</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -113,7 +122,7 @@
                 <input type="date" class="form-control" name="date" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label">จำนวนรถ (คัน)</label>
+                <label class="form-label">จำนวนรถทั้งหมด (ใน 1 บิล)</label>
                 <input type="number" class="form-control" name="qty" id="qtyInput" value="1" min="1" max="20" onchange="generateVehicleFields()" required>
               </div>
               <div class="col-md-12">
@@ -141,7 +150,7 @@
               </div>
             </div>
             <hr class="my-4 text-muted">
-            <h6 class="fw-bold mb-3 text-primary">รายละเอียดรถและคนขับ</h6>
+            <h6 class="fw-bold mb-3 text-primary">รายละเอียดรถและคนขับ (ระบุทีละคัน)</h6>
             <div id="vehicleContainer"></div>
           </form>
         </div>
@@ -157,20 +166,20 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold text-primary">✏️ แก้ไขข้อมูลรถ (1 คัน)</h5>
+          <h5 class="modal-title fw-bold text-primary">✏️ แก้ไขข้อมูล (เลขงาน: <span id="displayEditJobNo"></span>)</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="editForm">
             <input type="hidden" id="editRowId">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label">เลขงาน (ไม่อนุญาตให้แก้)</label>
-                <input type="text" class="form-control bg-light" id="editJobNo" readonly>
-              </div>
+            <input type="hidden" id="editJobNo"> <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">วันที่เริ่มงาน</label>
                 <input type="date" class="form-control" id="editDate" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">จำนวนรถทั้งหมด (แก้ไขในบิลนี้)</label>
+                <input type="text" class="form-control" id="editQty" required>
               </div>
               <div class="col-md-12">
                 <label class="form-label">ลูกค้า</label>
@@ -185,26 +194,23 @@
                 <input type="text" class="form-control" list="editDropoffOptions" id="editDropoff" autocomplete="off" required>
                 <datalist id="editDropoffOptions"></datalist>
               </div>
+              
               <div class="col-md-4">
-                <label class="form-label">จำนวนรถ (รวมในบิล)</label>
-                <input type="text" class="form-control" id="editQty" required>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">ประเภทรถ</label>
+                <label class="form-label">ประเภทรถ (คันนี้)</label>
                 <select class="form-select" id="editType" required>
                   <option value="4 ล้อ">4 ล้อ</option><option value="6 ล้อ">6 ล้อ</option><option value="6 ล้อพ่วง">6 ล้อพ่วง</option>
                   <option value="10 ล้อ">10 ล้อ</option><option value="10 ล้อพ่วง">10 ล้อพ่วง</option><option value="เทรลเลอร์">เทรลเลอร์</option>
                 </select>
               </div>
               <div class="col-md-4">
-                <label class="form-label">ทะเบียนรถ</label>
+                <label class="form-label">ทะเบียนรถ (คันนี้)</label>
                 <select class="form-select" id="editPlate" required onchange="autoFillEditDriver()"><option value="">-- เลือกทะเบียน --</option></select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label class="form-label">คนขับ (แก้ไขได้)</label>
                 <input type="text" class="form-control" id="editDriver" required>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <label class="form-label">หมายเหตุ</label>
                 <input type="text" class="form-control" id="editRemark">
               </div>
@@ -223,7 +229,7 @@
   
   <script>
     // ==========================================
-    // ใส่ URL จาก Google Apps Script ตรงนี้
+    // ใส่ URL จาก Google Apps Script ตรงนี้ (วางลิงก์ของตัวเองแทนที่)
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyZ2wgme02m-aJOmdChLErNbZmBkbu90p4gAB_t11ctWS3TBXwW3iZC7Jsfn8GQzEz6/exec"; 
     // ==========================================
 
@@ -246,7 +252,6 @@
         applyFilters(); 
         processVehicles(data.vehicles);
         
-        // เติมข้อมูลใส่ Dropdown ฟอร์มสร้าง และ ฟอร์มแก้ไข
         populateDropdown("customerSelect", data.master.customers, "-- เลือกลูกค้า --");
         populateDropdown("editCustomer", data.master.customers, "-- เลือกลูกค้า --");
         
@@ -296,12 +301,15 @@
       applyFilters();
     }
 
+    // -------------------------------------------------------------
+    // ฟังก์ชันสร้างหน้าตาราง (นำคอลัมน์ "เลขงาน" [row 0] ออกไปแล้ว)
+    // -------------------------------------------------------------
     function renderTablePage() {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '';
       
       if (filteredData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
         document.getElementById('showingCount').innerText = 0;
         document.getElementById('totalCount').innerText = allDashboardData.length;
         document.getElementById('pageInfo').innerText = 'หน้า 1/1';
@@ -316,19 +324,21 @@
       let html = '';
       for (let i = startIndex; i < endIndex; i++) {
         let row = filteredData[i];
-        // row[10] คือ row index ใน Google Sheets
+        // ตำแหน่ง Index ของข้อมูล: 
+        // 0: เลขงาน, 1: วันที่, 2: ลูกค้า, 3: สถานที่รับ, 4: สถานที่ส่ง
+        // 5: จำนวนรวม(คัน), 6: ประเภทรถ, 7: ทะเบียน, 8: คนขับ, 9: หมายเหตุ, 10: RowID ของ Sheet
         html += `<tr>
           <td class="text-center" style="white-space: nowrap;">
             <button class="action-btn text-primary" onclick="openEditModal(${i})" title="แก้ไข">✏️</button>
             <button class="action-btn text-danger ms-1" onclick="deleteBooking(${row[10]})" title="ลบ">🗑️</button>
           </td>
-          <td class="fw-bold text-primary" style="white-space: nowrap;">${row[0] || ''}</td>
           <td style="white-space: nowrap;">${row[1] || ''}</td>
           <td class="fw-medium">${row[2] || ''}</td>
           <td>${row[3] || ''}</td>
           <td>${row[4] || ''}</td>
-          <td style="white-space: nowrap;">${row[5] || '1'} / <span class="badge bg-secondary rounded-pill px-2">${row[6] || '-'}</span></td>
-          <td class="fw-bold" style="white-space: nowrap;">${row[7] || ''}</td>
+          <td class="text-center fw-bold text-primary">${row[5] || '1'}</td>
+          <td class="text-center"><span class="badge bg-secondary rounded-pill px-2 py-1">${row[6] || '-'}</span></td>
+          <td class="fw-bold text-dark" style="white-space: nowrap;">${row[7] || ''}</td>
           <td style="white-space: nowrap;">${row[8] || ''}</td>
           <td><span class="text-muted d-inline-block text-truncate" style="max-width: 120px;" title="${row[9] || ''}">${row[9] || '-'}</span></td>
         </tr>`;
@@ -404,7 +414,6 @@
       document.getElementById(elementId).innerHTML = html;
     }
 
-    // แปลงวันที่สำหรับใส่ในช่อง input type="date"
     function formatToInputDate(dateStr) {
       if(!dateStr) return '';
       if(dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
@@ -421,8 +430,10 @@
       const actualIndex = ((currentPage - 1) * limit) + (index % limit);
       const row = filteredData[actualIndex];
       
-      document.getElementById('editRowId').value = row[10]; // สำคัญ: ส่งค่าบรรทัดที่แท้จริง
-      document.getElementById('editJobNo').value = row[0];
+      document.getElementById('editRowId').value = row[10]; 
+      document.getElementById('displayEditJobNo').innerText = row[0]; // แสดงเลขงานที่ Title ของ Modal
+      document.getElementById('editJobNo').value = row[0];            // เก็บซ่อนไว้
+      
       document.getElementById('editDate').value = formatToInputDate(row[1]);
       document.getElementById('editCustomer').value = row[2];
       document.getElementById('editPickup').value = row[3];
@@ -483,7 +494,7 @@
     async function deleteBooking(rowId) {
       const result = await Swal.fire({
         title: 'ยืนยันการลบ?',
-        text: "ข้อมูลนี้จะถูกลบออกจากระบบถาวร ไม่สามารถกู้คืนได้!",
+        text: "ข้อมูลคันนี้จะถูกลบออกจากระบบถาวร ไม่สามารถกู้คืนได้!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',

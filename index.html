@@ -25,7 +25,6 @@
     .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 10px 12px; font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
     .table-modern td { padding: 8px 12px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
     
-    /* CSS สำหรับหัวตารางที่กด Sort ได้ */
     .sortable { cursor: pointer; user-select: none; transition: background-color 0.2s; }
     .sortable:hover { background-color: #e2e8f0; color: #0f172a; }
     .sort-icon { font-size: 0.65rem; color: #94a3b8; margin-left: 4px; display: inline-block; width: 10px; }
@@ -67,9 +66,12 @@
 <body>
 
   <div class="main-wrap">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
       <h2>🚚 Smart Booking</h2>
-      <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">+ สร้างรายการ</button>
+      <div>
+        <button type="button" class="btn btn-success btn-sm me-2" onclick="triggerLineManual()">ส่งสรุปงานเข้า LINE</button>
+        <button type="button" class="btn-main" data-bs-toggle="modal" data-bs-target="#bookingModal">+ สร้างรายการ</button>
+      </div>
     </div>
 
     <div class="filter-zone d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -117,6 +119,7 @@
           <tr>
             <th class="text-center">จัดการ</th>
             <th class="sortable" onclick="sortTable(1)">วันที่ <span class="sort-icon" id="sort-icon-1">↕</span></th>
+            <th class="sortable" onclick="sortTable(10)">เวลา <span class="sort-icon" id="sort-icon-10">↕</span></th>
             <th class="sortable" onclick="sortTable(2)">ลูกค้า <span class="sort-icon" id="sort-icon-2">↕</span></th>
             <th class="sortable" onclick="sortTable(3)">สถานที่รับ <span class="sort-icon" id="sort-icon-3">↕</span></th>
             <th class="sortable" onclick="sortTable(4)">สถานที่ส่ง <span class="sort-icon" id="sort-icon-4">↕</span></th>
@@ -151,11 +154,15 @@
         <div class="modal-body">
           <form id="bookingForm">
             <div class="row g-3 mb-3">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label class="form-label">วันที่เริ่มงาน</label>
                 <input type="date" class="form-control" name="date" required>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
+                <label class="form-label">เวลาขึ้นงาน</label>
+                <input type="time" class="form-control" name="time">
+              </div>
+              <div class="col-md-4">
                 <label class="form-label">จำนวนรถทั้งหมด (ใน 1 บิล)</label>
                 <input type="number" class="form-control" name="qty" id="qtyInput" value="1" min="1" max="20" onchange="generateVehicleFields()" required>
               </div>
@@ -209,12 +216,16 @@
             <input type="hidden" id="editJobNo"> 
             
             <div class="row g-3">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label class="form-label">วันที่เริ่มงาน</label>
                 <input type="date" class="form-control" id="editDate" required>
               </div>
-              <div class="col-md-6">
-                <label class="form-label">คันที่/รวม (พิมพ์ได้ เช่น 1/3)</label>
+              <div class="col-md-4">
+                <label class="form-label">เวลาขึ้นงาน</label>
+                <input type="time" class="form-control" id="editTime">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">คันที่/รวม (เช่น 1/3)</label>
                 <input type="text" class="form-control" id="editQty" required>
               </div>
               <div class="col-md-12">
@@ -264,10 +275,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // ==========================================
-    // ใส่ URL จาก Google Apps Script ตรงนี้
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyZ2wgme02m-aJOmdChLErNbZmBkbu90p4gAB_t11ctWS3TBXwW3iZC7Jsfn8GQzEz6/exec"; 
-    // ==========================================
 
     let vehicleList = [];
     let vehicleOptionsHTML = '<option value="">-- เลือกทะเบียน --</option>';
@@ -276,7 +284,6 @@
     let currentPage = 1;
     let currentLimit = 30;
     
-    // ตัวแปรสำหรับระบบเรียงข้อมูล (Sorting)
     let currentSortCol = -1;
     let sortAscending = true;
 
@@ -355,7 +362,6 @@
         return matchSearch && matchDate;
       });
 
-      // ถ้ามีการกดให้ Sort ค้างไว้ ให้เรียงข้อมูลที่เพิ่งกรองเสร็จใหม่ด้วย
       if (currentSortCol !== -1) {
         doSortArray();
       }
@@ -364,10 +370,9 @@
       renderTablePage();
     }
 
-    // ================== ฟังก์ชันเรียงลำดับตาราง (Sorting) ==================
     function sortTable(colIndex) {
       if (currentSortCol === colIndex) {
-        sortAscending = !sortAscending; // สลับ น้อย>มาก เป็น มาก>น้อย
+        sortAscending = !sortAscending;
       } else {
         currentSortCol = colIndex;
         sortAscending = true;
@@ -384,11 +389,9 @@
         let valA = a[currentSortCol] ? a[currentSortCol].toString().trim() : '';
         let valB = b[currentSortCol] ? b[currentSortCol].toString().trim() : '';
         
-        // ลบเครื่องหมาย ' เผื่อในกรณีเรียงคอลัมน์คันที่ (1/3)
         if(valA.startsWith("'")) valA = valA.substring(1);
         if(valB.startsWith("'")) valB = valB.substring(1);
 
-        // localeCompare จะฉลาดพอที่จะเรียงทั้งอักษรไทย, อังกฤษ และตัวเลขที่ปนในข้อความได้ถูกต้อง
         return sortAscending 
              ? valA.localeCompare(valB, 'th', {numeric: true}) 
              : valB.localeCompare(valA, 'th', {numeric: true});
@@ -400,10 +403,9 @@
       const activeIcon = document.getElementById('sort-icon-' + colIndex);
       if(activeIcon) {
         activeIcon.innerHTML = sortAscending ? '▲' : '▼';
-        activeIcon.style.color = '#4f46e5'; // เปลี่ยนสีให้รู้ว่าถูกเลือก
+        activeIcon.style.color = '#4f46e5'; 
       }
     }
-    // ====================================================================
 
     function changeLimit() {
       const val = document.getElementById('limitSelect').value;
@@ -436,7 +438,7 @@
       tbody.innerHTML = '';
       
       if (filteredData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
         document.getElementById('showingCount').innerText = 0;
         document.getElementById('totalCount').innerText = allDashboardData.length;
         document.getElementById('pageInfo').innerText = 'หน้า 1/1';
@@ -460,9 +462,10 @@
         html += `<tr>
           <td class="text-center" style="white-space: nowrap;">
             <button class="action-btn text-primary" onclick="openEditModal(${i})" title="แก้ไข">✏️</button>
-            <button class="action-btn text-danger ms-1" onclick="deleteBooking(${row[10]})" title="ลบ">🗑️</button>
+            <button class="action-btn text-danger ms-1" onclick="deleteBooking(${row[11]})" title="ลบ">🗑️</button>
           </td>
           <td style="white-space: nowrap;">${row[1] || ''}</td>
+          <td style="white-space: nowrap;">${row[10] || '-'}</td>
           <td class="fw-medium">${row[2] || ''}</td>
           <td>${row[3] || ''}</td>
           <td>${row[4] || ''}</td>
@@ -538,6 +541,7 @@
       items.forEach(item => { if(item) html += `<option value="${item}">${item}</option>`; });
       document.getElementById(elementId).innerHTML = html;
     }
+    
     function populateDatalist(elementId, items) {
       let html = '';
       items.forEach(item => { if(item) html += `<option value="${item}">`; });
@@ -559,7 +563,7 @@
       const actualIndex = ((currentPage - 1) * limit) + (index % limit);
       const row = filteredData[actualIndex];
       
-      document.getElementById('editRowId').value = row[10]; 
+      document.getElementById('editRowId').value = row[11]; 
       document.getElementById('displayEditJobNo').innerText = row[0]; 
       document.getElementById('editJobNo').value = row[0];            
       document.getElementById('editDate').value = formatToInputDate(row[1]);
@@ -575,6 +579,7 @@
       document.getElementById('editPlate').value = row[7];
       document.getElementById('editDriver').value = row[8];
       document.getElementById('editRemark').value = row[9] || '';
+      document.getElementById('editTime').value = row[10] || '';
       
       new bootstrap.Modal(document.getElementById('editModal')).show();
     }
@@ -593,7 +598,8 @@
         type: document.getElementById('editType').value,
         plate: document.getElementById('editPlate').value,
         driver: document.getElementById('editDriver').value,
-        remark: document.getElementById('editRemark').value
+        remark: document.getElementById('editRemark').value,
+        time: document.getElementById('editTime').value
       };
 
       let btn = document.getElementById("editSaveBtn");
@@ -659,6 +665,7 @@
 
       const formData = {
         date: form.date.value,
+        time: form.time.value,
         customer: form.customer.value,
         pickup: form.pickup.value,
         dropoff: form.dropoff.value,
@@ -683,6 +690,29 @@
       } catch (err) {
         Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ: ' + err.message, 'error');
         btn.disabled = false; btn.innerText = "บันทึกข้อมูล";
+      }
+    }
+
+    async function triggerLineManual() {
+      if(!confirm('ยืนยันส่งสรุปคิวรถของวันพรุ่งนี้ เข้าสู่ระบบ LINE?')) return;
+      
+      Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+      
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST', redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: 'sendLineManual' })
+        });
+        const data = await res.json();
+        
+        if (data.status === 'Success') {
+          Swal.fire('สำเร็จ!', data.message, 'success');
+        } else {
+          Swal.fire('แจ้งเตือน', data.error, 'warning');
+        }
+      } catch (err) {
+        Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้: ' + err.message, 'error');
       }
     }
   </script>

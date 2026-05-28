@@ -14,32 +14,38 @@
     body { font-family: 'Prompt', sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 10px 0; overflow: hidden; }
     .main-wrap { width: 96%; height: 100%; display: flex; flex-direction: column; background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 1.25rem 1.5rem; border: 1px solid #fff; }
     h2 { font-weight: 700; font-size: 1.4rem; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;}
-    .btn-main { background: var(--primary); border: none; color: white; padding: 8px 20px; font-size: 0.9rem; border-radius: 8px; font-weight: 500; transition: all 0.2s; white-space: nowrap; }
+    .btn-main { background: var(--primary); border: none; color: white; padding: 8px 20px; font-size: 0.85rem; border-radius: 8px; font-weight: 500; transition: all 0.2s; white-space: nowrap; }
     .btn-main:hover { background: var(--primary-hover); color: white; }
     .filter-zone { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 15px; margin-bottom: 10px; }
-    .filter-zone input, .filter-zone select { font-size: 0.85rem; border-color: #cbd5e1; }
+    .filter-zone input, .filter-zone select { font-size: 0.8rem; border-color: #cbd5e1; }
     .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
-    .table-modern { margin: 0; width: 100%; min-width: 1100px; border-collapse: collapse; }
-    .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 12px 15px; font-size: 0.8rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
-    .table-modern td { padding: 10px 15px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
     
-    /* สีของประเภทรถแต่ละชนิด */
-    .badge-4wheel { background-color: #10b981; color: white; } /* เขียว */
-    .badge-6wheel { background-color: #f59e0b; color: white; } /* ส้ม */
-    .badge-6wheel-p { background-color: #d97706; color: white; } /* ส้มเข้ม */
-    .badge-10wheel { background-color: #3b82f6; color: white; } /* ฟ้า */
-    .badge-10wheel-p { background-color: #2563eb; color: white; } /* น้ำเงิน */
-    .badge-trailer { background-color: #ef4444; color: white; } /* แดง */
-    .badge-default { background-color: #64748b; color: white; } /* เทา */
+    .table-modern { margin: 0; width: 100%; min-width: 1100px; border-collapse: collapse; }
+    .table-modern th { background: #f1f5f9; color: var(--text-muted); font-weight: 600; padding: 10px 12px; font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 var(--border); white-space: nowrap; }
+    .table-modern td { padding: 8px 12px; vertical-align: middle; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+    
+    /* สลับสีตาราง (Zebra Striping) */
+    .table-modern tbody tr:nth-child(even) { background-color: #f8fafc; }
+    .table-modern tbody tr:nth-child(odd) { background-color: #ffffff; }
+    .table-modern tbody tr:hover { background-color: #e2e8f0 !important; transition: background-color 0.2s; }
+    
+    /* สีของประเภทรถแต่ละชนิดให้เด่นและแตกต่างกัน */
+    .badge-4wheel { background-color: #10b981; color: white; } /* เขียวสว่าง */
+    .badge-6wheel { background-color: #f59e0b; color: white; } /* เหลืองส้ม */
+    .badge-6wheel-p { background-color: #e11d48; color: white; } /* แดงชมพู */
+    .badge-10wheel { background-color: #0ea5e9; color: white; } /* ฟ้าสว่าง */
+    .badge-10wheel-p { background-color: #8b5cf6; color: white; } /* ม่วงสว่าง */
+    .badge-trailer { background-color: #334155; color: white; } /* ดำเทาเข้ม */
+    .badge-default { background-color: #94a3b8; color: white; } /* เทาพื้นฐาน */
 
-    .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
-    .form-control, .form-select { border-radius: 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; }
+    .form-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
+    .form-control, .form-select { border-radius: 8px; font-size: 0.85rem; border: 1px solid #cbd5e1; }
     .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
     .modal-content { border-radius: var(--radius-lg); border: none; }
     .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
     .modal-body { padding: 1.5rem; }
     .vehicle-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
-    .action-btn { padding: 2px 8px; font-size: 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: white; transition: 0.2s; }
+    .action-btn { padding: 2px 8px; font-size: 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: white; transition: 0.2s; }
     .action-btn:hover { background: #f1f5f9; }
     
     @media (max-width: 768px) {
@@ -76,7 +82,7 @@
         <button class="btn btn-sm btn-light border text-muted" onclick="clearFilters()">ล้างค่า</button>
       </div>
       <div class="d-flex align-items-center gap-2">
-        <span class="text-muted" style="font-size: 0.8rem;">แสดง:</span>
+        <span class="text-muted" style="font-size: 0.75rem;">แสดง:</span>
         <select id="limitSelect" class="form-select form-select-sm" style="width: 90px;" onchange="changeLimit()">
           <option value="30">30</option>
           <option value="50">50</option>
@@ -87,7 +93,7 @@
     </div>
 
     <div class="table-container">
-      <table class="table-modern table-hover">
+      <table class="table-modern">
         <thead>
           <tr>
             <th class="text-center">จัดการ</th>
@@ -106,7 +112,7 @@
       </table>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mt-3 px-1 text-muted" style="font-size: 0.8rem;">
+    <div class="d-flex justify-content-between align-items-center mt-3 px-1 text-muted" style="font-size: 0.75rem;">
       <div>พบข้อมูล <span id="showingCount" class="fw-bold text-dark">0</span> จาก <span id="totalCount">0</span> รายการ</div>
       <div class="d-flex gap-2 align-items-center">
         <button class="btn btn-sm btn-light border" onclick="prevPage()">◀ ก่อนหน้า</button>
@@ -159,7 +165,7 @@
               </div>
             </div>
             <hr class="my-4 text-muted">
-            <h6 class="fw-bold mb-3 text-primary">รายละเอียดรถและคนขับ (ระบุทีละคัน)</h6>
+            <h6 class="fw-bold mb-3 text-primary" style="font-size:0.9rem;">รายละเอียดรถและคนขับ (ระบุทีละคัน)</h6>
             <div id="vehicleContainer"></div>
           </form>
         </div>
@@ -310,7 +316,7 @@
       applyFilters();
     }
     
-    // ฟังก์ชันจับคู่สีกับประเภทรถ
+    // ฟังก์ชันจับคู่สีกับประเภทรถ (เปลี่ยนสีให้จัดจ้านขึ้น)
     function getBadgeClass(type) {
       if(!type) return "badge-default";
       if(type.includes("4 ล้อ")) return "badge-4wheel";
@@ -327,7 +333,7 @@
       tbody.innerHTML = '';
       
       if (filteredData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-5">ไม่พบข้อมูล</td></tr>';
         document.getElementById('showingCount').innerText = 0;
         document.getElementById('totalCount').innerText = allDashboardData.length;
         document.getElementById('pageInfo').innerText = 'หน้า 1/1';
@@ -343,6 +349,12 @@
       for (let i = startIndex; i < endIndex; i++) {
         let row = filteredData[i];
         
+        // ลบเครื่องหมาย ' ออกจากค่าจำนวนรถ (ถ้ามี) ก่อนนำไปแสดง
+        let displayQty = row[5] || '1/1';
+        if(displayQty.toString().startsWith("'")) {
+            displayQty = displayQty.substring(1);
+        }
+
         let typeText = row[6] || '-';
         let badgeClass = getBadgeClass(typeText);
 
@@ -355,7 +367,7 @@
           <td class="fw-medium">${row[2] || ''}</td>
           <td>${row[3] || ''}</td>
           <td>${row[4] || ''}</td>
-          <td class="text-center fw-bold text-primary">${row[5] || '1/1'}</td>
+          <td class="text-center fw-bold text-primary">${displayQty}</td>
           <td class="text-center"><span class="badge ${badgeClass} rounded-pill px-2 py-1">${typeText}</span></td>
           <td class="fw-bold text-dark" style="white-space: nowrap;">${row[7] || ''}</td>
           <td style="white-space: nowrap;">${row[8] || ''}</td>
@@ -392,7 +404,7 @@
       for(let i = 1; i <= qty; i++) {
         container.innerHTML += `
           <div class="vehicle-card mb-3">
-            <h6 class="fw-bold text-dark mb-2" style="font-size:0.9rem;">🚘 รถคันที่ ${i} (จากทั้งหมด ${qty} คัน)</h6>
+            <h6 class="fw-bold text-dark mb-2" style="font-size:0.85rem;">🚘 รถคันที่ ${i} (จากทั้งหมด ${qty} คัน)</h6>
             <div class="row g-2">
               <div class="col-md-4">
                 <label class="form-label">ประเภท</label>
@@ -456,7 +468,12 @@
       document.getElementById('editCustomer').value = row[2];
       document.getElementById('editPickup').value = row[3];
       document.getElementById('editDropoff').value = row[4];
-      document.getElementById('editQty').value = row[5]; // ดึงค่า 1/3 มาใส่ในช่องเลย
+      
+      // ลบเครื่องหมาย ' ออกเวลาดึงข้อมูลมาแสดงในฟอร์มแก้ไข
+      let editQtyVal = row[5] || '';
+      if(editQtyVal.toString().startsWith("'")) editQtyVal = editQtyVal.substring(1);
+      document.getElementById('editQty').value = editQtyVal; 
+      
       document.getElementById('editType').value = row[6];
       document.getElementById('editPlate').value = row[7];
       document.getElementById('editDriver').value = row[8];
@@ -475,7 +492,7 @@
         customer: document.getElementById('editCustomer').value,
         pickup: document.getElementById('editPickup').value,
         dropoff: document.getElementById('editDropoff').value,
-        qty: document.getElementById('editQty').value, // เซฟค่าที่แก้ เช่น 2/5 กลับไป
+        qty: document.getElementById('editQty').value, 
         type: document.getElementById('editType').value,
         plate: document.getElementById('editPlate').value,
         driver: document.getElementById('editDriver').value,
